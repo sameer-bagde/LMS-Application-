@@ -24,7 +24,6 @@ Welcome to the Learning Management System (LMS) Application, designed to provide
 - **Sign Up:** New educators can create an account by signing up.
 - **Sign Out:** Users can log out of their accounts.
 - **Create Courses:** Educators can create new courses for students.
-- **Create Chapters:** Inside each course, educators can organize content into chapters.
 - **Change Password:** Educators can change their account password.
 
 
