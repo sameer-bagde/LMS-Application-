@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Signup</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        background: linear-gradient(135deg, #4CAF50, #2196F3);
+        font-family: Arial, sans-serif;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .form-container {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+        width: 350px;
+        text-align: center;
+      }
+
+      .form-container h3 {
+        display: flex;
+        align-items: center;
+        background: linear-gradient(135deg, #4CAF50, #2196F3);
+        color: white; 
+        padding: 10px; 
+        border-radius: 10px; 
+      }
+
+      .form-container img {
+        width: 40px;
+        margin-right: 10px;
+      }
+
+      .form-container h6 {
+        font-size: 16px;
+        color: #555;
+        margin: 10px 0; /* Add margin between the heading and the subtitle */
+      }
+
+      .form-container label {
+        display: block;
+        font-size: 14px;
+        color: #333;
+        margin-bottom: 5px;
+      }
+
+      .form-container input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
+
+      .form-container button {
+        background: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-container">
+      <h3>
+        <img src="https://cdn-icons-png.flaticon.com/512/4185/4185714.png" alt="Learning Management System" />
+        Learning Management System
+      </h3>
+
+      <h6>Signup as a new user</h6>
+      <form action="/users" method="post">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <div>
+          <label for="firstName">First name:</label>
+          <input name="firstName" id="firstName" type="text" required />
+        </div>
+        <div>
+          <label for="lastName">Last name:</label>
+          <input name="lastName" id="lastName" type="text" />
+        </div>
+        <div>
+          <label for="email">Email:</label>
+          <input name="email" id="email" type="email" required />
+        </div>
+        <div>
+          <label for="password">Password:</label>
+          <input name="password" id="password" type="password" required />
+        </div>
+        <div>
+          <button type="submit" name="submit" value="educator">Educator</button>
+          <button type="submit" name="submit" value="student">Student</button>
+        </div>
+      </form>
+        <div style="margin: 20px 0;">
+          <h6 style="margin: 10px 0;">Already have an account?</h6>
+          <p style="margin: 10px 0;"> <a href="/login" class="text-green-600">Login</a></p>
+        </div>
+
+      <div>
+        <% if (messages && messages.error && messages.error.length > 0)  { %>
+          <% var i = 0; %>
+          <% while (i < messages.error.length) { %>
+              <p><%= messages.error[i] %></p>
+            <% i++; %>
+          <% } %>
+        <% } %>
+      </div>
+    </div>
+  </body>
+</html>

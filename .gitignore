@@ -1,0 +1,17 @@
+node_modules
+    static associate(models) {
+      // define association here
+      Course.belongsTo(models.User, {
+        foreignKey: "userId"
+      })
+      Course.hasMany(models.Chapter, {
+        foreignKey: "courseId"
+      })
+    }
+
+    static addCourse(title, userId) {
+      return Course.create({
+        title: title,
+        userId
+      })
+    }

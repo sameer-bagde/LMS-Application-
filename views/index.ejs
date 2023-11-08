@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Learing Management System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Style the solid box */
+      body {
+        background: linear-gradient(135deg, #4CAF50, #2196F3);
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .form-container {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+        width: 300px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .form-container h3 {
+        display: flex;
+        align-items: center;
+        background: linear-gradient(135deg, #4CAF50, #2196F3);
+        color: white; 
+        padding: 10px; 
+        border-radius: 10px;
+      }
+
+
+      .form-container img {
+        width: 40px;
+        margin-right: 10px;
+      }
+
+      .form-container p {
+        font-size: 16px;
+        margin: 10px 0;
+      }
+
+      /* Style the links */
+      .form-container a {
+        color: #2196F3;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .form-container a:hover {
+        color: #4CAF50;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-container">
+      <h3>
+        <img src="https://cdn-icons-png.flaticon.com/512/4185/4185714.png" alt="Learning Management System" /> Learning Management System
+      </h3>
+      <p class="py-2">Welcome to the LMS</p>
+      <p class="py-2">New here? <a href="/signup" class="text-green-600">Sign-up now</a></p>
+      <p class="py-2">Already have an account? <a href="/login" class="text-green-600">Sign-in</a></p>
+    </div>
+  </body>
+</html>

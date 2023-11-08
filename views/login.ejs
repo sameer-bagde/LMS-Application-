@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Style the solid box */
+      body {
+        background: linear-gradient(135deg, #4CAF50, #2196F3);
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .form-container {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+        width: 350px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .form-container h3 {
+        display: flex;
+        align-items: center;
+        background: linear-gradient(135deg, #4CAF50, #2196F3);
+        color: white;
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+      }
+
+      .form-container img {
+        width: 40px;
+        margin-right: 10px;
+      }
+
+      .form-container p {
+        font-size: 16px;
+        margin: 10px 0;
+      }
+
+      .form-container a {
+        color: #2196F3;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .form-container a:hover {
+        color: #4CAF50;
+      }
+
+      /* Style form input and button */
+      .form-container input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin: 10px 0;
+      }
+
+      .form-container button {
+        background: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        width: 50%;
+        margin: 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-container">
+      <h3>
+        <img src="https://cdn-icons-png.flaticon.com/512/4185/4185714.png" alt="Learning Management System" /> Learning Management System
+      </h3>
+      <h6 style="margin: 20px 0;">Login to your account</h6>
+      <form action="/session" method="post">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <div>
+          <label for="email" style="margin: 10px 0;">Email: </label>
+          <input name="email" type="email" required />
+        </div>
+        <div>
+          <label for="password" style="margin: 10px 0;">Password: </label>
+          <input name="password" type="password" required />
+        </div>
+        <div>
+          <button type="submit">Sign-in</button>
+        </div>
+      </form>
+      <div>
+        <% if (messages && messages.error && messages.error.length > 0) { %>
+        <% var i = 0; %>
+        <% while (i < messages.error.length) { %>
+        <p><%= messages.error[i] %></p>
+        <% i++; %>
+        <% } %>
+        <% } %>
+      </div>
+      <div style="margin: 20px 0;">
+        <h6 style="margin: 10px 0;">Don't have an account?</h6>
+        <p style="margin: 10px 0;">New here? <a href="/signup" class="text-green-600">Sign-up now</a></p>
+      </div>
+    </div>
+  </body>
+</html>
