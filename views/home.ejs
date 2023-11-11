@@ -56,6 +56,17 @@ body {
             text-align: left;
         }
 
+
+
+
+a.button.orange {
+    background: rgb(212, 142, 45);
+}
+
+a.button.orange {
+    background: #eb6d05;
+}
+
         a.button {
             color: white;
             text-decoration: none;
@@ -148,6 +159,25 @@ body {
         border-radius: 5px 5px 5px 5px;
       }
     </style>
+
+<script>
+  function deleteCourse(chapterId) {
+    // You can perform any logic or make an AJAX request here to delete the course
+    // For example, using fetch:
+    fetch(`/deleteChapter/${chapterId}`, {
+      method: 'DELETE',
+    })
+      .then(response => response.json())
+      .then(data => {
+        // Handle the response from the server
+        console.log(data);
+        // Optionally, you can update the UI or perform other actions here
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
+</script>
   </head>
   <body>
     <div class="container mx-auto">
@@ -202,7 +232,9 @@ body {
               <a href="/course/<%= course.id %>" class="button blue">
                 View Course
               </a>
-            </div>
+                <a href="/editChapter?chapterId=<%= chapter.id %>" class="button green">Edit</a>
+                <a href="#!" onclick="deleteCourse('<%= chapter.id %>')" class="button orange">Delete</a>
+              </div>
           <% }); %>
         <% } else { %>
           <% course.forEach(function(course) { %>
