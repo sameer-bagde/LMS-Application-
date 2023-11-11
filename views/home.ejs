@@ -6,16 +6,19 @@
     <title>Home Page</title>
     <meta name="csrf-token" content="<%= csrfToken %>" />
     <style>
+body, html {
+    height: 100%;
+}
+
 body {
-            background: linear-gradient(135deg, #4CAF50, #2196F3);
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #4CAF50, #2196F3);
+    font-family: Arial, sans-serif;
+}
 
         .container {
             background: white;
@@ -23,7 +26,7 @@ body {
             border-radius: 10px;
             box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
             width: 95%;
-            margin-top: 20px;
+            margin-top: 50px;
             margin-bottom: 10px;
             height: auto;
         }
@@ -160,7 +163,7 @@ body {
           </div>
         </div>
 
-        <div style="padding-top: 15px;">
+        <div style="padding-top: 20px;">
           <a href="/changePassword" class="button yellow">Change Password</a>
           <a href="/signout" class="button red">Sign Out</a>
         </div>
@@ -196,7 +199,7 @@ body {
               <h2><%= course.title %></h2>
               <p>Course ID: <%= course.id %></p>
               <p>Educator: <%= course.educatorName %></p>
-              <a href="/viewCourse/<%= course.id %>" class="button blue">
+              <a href="/course/<%= course.id %>" class="button blue">
                 View Course
               </a>
             </div>
@@ -207,7 +210,7 @@ body {
             <h2><%= course.title %></h2>
             <p>Course ID: <%= course.id %></p>
             <p>Educator: <%= course.educatorName %></p>
-            <a href="/viewCourse/<%= course.id %>" class="button blue">
+            <a href="/course/<%= course.id %>" class="button blue">
               View Course
             </a>
             <a href="/enrollcourse/<%= course.id %>" class="button green">Enrol</a>
@@ -217,6 +220,6 @@ body {
       </div>
       
 
-    <a href="/home" style="position: absolute; font-weight: bold; color: #000000; top: 5px; left: 10px; ">Home</a>
+    <a href="/home" style="position: absolute; font-weight: bold; color: #ffffff; top: 5px; left: 10px; ">Home</a>
   </body>
 </html>

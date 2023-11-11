@@ -103,15 +103,15 @@
 </head>
 
 <body class="bg-gray-200">
-    <a href="/home" style="position: absolute; font-weight: bold; color: #000000; top: 10px; left: 10px;">Home</a>
-    <a href="/viewCourse/<%= course.id %>" style="position: absolute; font-weight: bold; top: 10px; left: 75px;">Course Details</a>
-    <a href="/course/<%= course.id %>/createChapter" style="position: absolute; font-weight: bold; top: 10px; left: 210px;">Create Chapter</a>
+    <a href="/home" style="position: absolute; font-weight: bold; color: #ffffff; top: 10px; left: 10px;">Home</a>
+    <a href="/course/<%= course.id %>" style="position: absolute; color: #ffffff; font-weight:  bold; top: 10px; left: 75px;">Course Details</a>
+    <a href="/course/<%= course.id %>/createChapter" style="position: absolute; color: #ffffff; font-weight: bold; top: 10px; left: 210px;">Create Chapter</a>
   
     <div class="form-container">
       <div>
         <h1 class="header">Create a New Chapter</h1>
       </div>
-      <form action="/createChapter" method="POST">
+      <form action="/course/<%= course.id %>/createChapter" method="POST">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="mb-4">
           <label for="title" class="form-label">Chapter Title</label>

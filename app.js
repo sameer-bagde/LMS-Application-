@@ -249,7 +249,7 @@ app.post(
         userId,
       });
 
-      response.redirect(`/viewCourse/${createdCourse.id}`);
+      response.redirect(`/course/${createdCourse.id}`);
     } catch (error) {
       console.log(error);
       return response.status(422).json(error);
@@ -258,7 +258,7 @@ app.post(
 );
 
 app.get(
-  `/viewCourse/:id`,
+  `/course/:id`,
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     const courseId = request.params.id;
@@ -274,7 +274,7 @@ app.get(
       }
 
       if (request.accepts("html")) {
-        response.render("viewCourse", {
+        response.render("course", {
           role: role,
           course: course,
           chapter: chapter,
@@ -306,6 +306,7 @@ app.get(
         response.render("createChapter", {
           course: course,
           chapter: chapter, // Pass chapters instead of chapter
+          courseId,
           csrfToken: request.csrfToken(),
         });
       }
@@ -317,17 +318,27 @@ app.get(
 );
 
 app.post(
-  "/createChapter",
+  "/course/:id/createChapter",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     const { title, description } = request.body;
+    const courseId = request.params.id;
 
     try {
+      const course = await Course.findOne({ where: { id: courseId } });
+      const chapter = await Chapter.findAll({ where: { courseId: courseId } });
+
+      if (!course) {
+        response.status(404).json({ message: "Course not found" });
+        return;
+      }
       const newChapter = await Chapter.create({
         title: title,
         description: description,
+        chapter,
+        courseId
       });
-      response.redirect(`/viewChapter/${newChapter.id}`); // Redirect to the course page after creating the chapter
+      response.redirect(`chapter/${newChapter.id}`); // Redirect to the course page after creating the chapter
     } catch (error) {
       console.error(error);
       response.status(500).json({ message: "Internal Server Error" });
