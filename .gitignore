@@ -15,3 +15,24 @@ node_modules
         userId
       })
     }
+
+
+
+    
+<!-- <hr>
+<h3 class="text-2xl font-semibold">Enrolled Courses</h3>
+      <div>
+        <% if (role === 'student') { %>
+          <% course.forEach(function(course) { %> 
+            <div class="course-card">
+              <h2><%= course.title %></h2>
+              <p>Course ID: <%= course.id %></p>
+              <p>Educator: <%= course.educatorName %></p>
+              <a href="/enrolledCourse/<%= course.id %>" class="button blue">
+                View Course
+              </a>
+            </div> 
+          <% }); %>
+        <% } %>
+      </div> -->
+      

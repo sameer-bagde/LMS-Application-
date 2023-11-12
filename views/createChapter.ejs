@@ -115,11 +115,11 @@
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="mb-4">
           <label for="title" class="form-label">Chapter Title</label>
-          <input type="text" id="title" name="title" placeholder="Enter the Chapter Title" class="form-input">
+          <input type="text" id="title" name="title" placeholder="Enter the Chapter Title" class="form-input" required>
         </div>
         <div class="mb-4">
           <label for="description" class="form-label">Chapter Description</label>
-          <textarea id="description" name="description" placeholder="Enter the Chapter Description" class="form-textarea" rows="6" maxlength="500"></textarea>
+          <textarea id="description" name="description" placeholder="Enter the Chapter Description" class="form-textarea" rows="6" maxlength="500" required></textarea>
         </div>
         <button type="submit" class="form-button">Create Chapter</button>
       </form>

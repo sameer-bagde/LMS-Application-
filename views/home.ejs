@@ -7,18 +7,18 @@
     <meta name="csrf-token" content="<%= csrfToken %>" />
     <style>
 body, html {
-    height: 100%;
+    height: auto;
 }
 
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(135deg, #4CAF50, #2196F3);
-    font-family: Arial, sans-serif;
-}
+  background: #4CAF50;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: auto;
+      }
 
         .container {
             background: white;
@@ -28,7 +28,7 @@ body {
             width: 95%;
             margin-top: 50px;
             margin-bottom: 10px;
-            height: auto;
+            height: 100hv;
         }
 
         .header {
@@ -161,23 +161,12 @@ a.button.orange {
     </style>
 
 <script>
-  function deleteCourse(chapterId) {
-    // You can perform any logic or make an AJAX request here to delete the course
-    // For example, using fetch:
-    fetch(`/deleteChapter/${chapterId}`, {
-      method: 'DELETE',
-    })
-      .then(response => response.json())
-      .then(data => {
-        // Handle the response from the server
-        console.log(data);
-        // Optionally, you can update the UI or perform other actions here
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-  }
-</script>
+  var token = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+
+
+    </script>
   </head>
   <body>
     <div class="container mx-auto">
@@ -192,7 +181,6 @@ a.button.orange {
             <% } %>
           </div>
         </div>
-
         <div style="padding-top: 20px;">
           <a href="/changePassword" class="button yellow">Change Password</a>
           <a href="/signout" class="button red">Sign Out</a>
@@ -232,8 +220,7 @@ a.button.orange {
               <a href="/course/<%= course.id %>" class="button blue">
                 View Course
               </a>
-                <a href="/editChapter?chapterId=<%= chapter.id %>" class="button green">Edit</a>
-                <a href="#!" onclick="deleteCourse('<%= chapter.id %>')" class="button orange">Delete</a>
+
               </div>
           <% }); %>
         <% } else { %>

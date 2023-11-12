@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrfToken %>">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.2/dist/tailwind.min.css" rel="stylesheet">
+    <title>Create Page</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #4CAF50, #2196F3);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #2196F3);
+            color: white;
+            padding: 20px;
+            border-radius: 10px 10px 10px 10px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+        }
+
+        .form-container {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-title {
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #4a90e2;
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            font-size: 0.875rem;
+            color: #4a90e2;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.25rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            border-color: #4299e1;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.25rem;
+            outline: none;
+            resize: vertical;
+        }
+
+        .form-button {
+            width:100%;
+            padding: 0.5rem 0;
+            background-color: #0cc71e;
+            color: #fff;
+            font-weight: 500;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            justify-content: center;
+            
+        }
+
+        .form-button:hover {
+            background-color: #15a308;
+        }
+
+        a {
+        display: block;
+        color: #000000;
+        text-align: center;
+        padding: 10px 12px;
+        text-decoration: none;
+      }
+      a:hover:not(.active) {
+        background-color: rgb(6, 191, 62);
+        border-radius: 5px 5px 5px 5px;
+      }
+    </style>
+</head>
+
+<body class="bg-gray-200">
+    <a href="/home" style="position: absolute; font-weight: bold; color: #ffffff; top: 10px; left: 10px;">Home</a>
+    <a href="/course/<%= course.id %>" style="position: absolute; color: #ffffff; font-weight:  bold; top: 10px; left: 70px;">Course Details</a>
+    <a href="/course/<%= course.id %>/chapter/<%= chapter.id %>" style="position: absolute; color: #ffffff; font-weight:  bold; top: 10px; left: 200px;">Chapter Details</a>
+    <a href="/course/<%= course.id %>/chapter/<%= chapter.id %>/createPage" style="position: absolute; color: #ffffff; font-weight:  bold; top: 10px; left: 335px;">Create Page</a>
+  
+    <div class="form-container">
+      <div>
+        <h1 class="header">Create New Page</h1>
+      </div>
+      <form action="/course/<%= course.id %>/createChapter" method="POST">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <div class="mb-4">
+          <label for="title" class="form-label">Page Title</label>
+          <input type="text" id="title" name="title" placeholder="Enter the Page Title" class="form-input" required>
+        </div>
+        <div class="mb-4">
+          <label for="description" class="form-label">Page Content</label>
+          <textarea id="description" name="description" placeholder="Enter the Page Content" class="form-textarea" rows="6" maxlength="500" required></textarea>
+        </div>
+        <button type="submit" class="form-button">Create Page</button>
+      </form>
+    </div>
+  </body>
+</html>

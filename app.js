@@ -288,24 +288,57 @@ app.get(
   },
 );
 
-// app.delete('/course/:courseId', async function (request, response) {
-//   try {
-//     const { courseId } = request.params;
+// delete course by my course
 
-//     const course = await Course.findByPk(courseId);
+// app.get('/course/:courseId',connectEnsureLogin.ensureLoggedIn(),
+// async (request, response) => {
+//   try {
+//     const {
+//       courseId
+//     } = request.params;
+//     const course = await Chapter.findByPk(courseId);
 //     if (!course) {
-//       return response.status(404).json({ message: 'Course not found' });
+//       return response.status(404).json({
+//         message: 'Course not found'
+//       });
+//     }
+//     return response.json(course);
+//   } catch (error) {
+//     console.log(error);
+//     return response.status(500).json({
+//       message: 'Internal Server Error'
+//     });
+//   }
+// });
+
+// app.delete('/course/:courseId', connectEnsureLogin.ensureLoggedIn(),
+// async (request, response) => {
+//   try {
+//     const {
+//       courseId
+//     } = request.params;
+
+//     const course = await Chapter.findByPk(courseId);
+//     if (!course) {
+//       return response.status(404).json({
+//         message: 'Course not found'
+//       });
 //     }
 
 //     await course.destroy();
-//     return response.json({ message: 'Course deleted successfully' });
+//     return response.json({
+//       message: 'Course deleted successfully'
+//     });
 //   } catch (error) {
 //     console.log(error);
-//     return response.status(500).json({ message: 'Internal Server Error' });
+//     return response.status(500).json({
+//       message: 'Internal Server Error'
+//     });
 //   }
 // });
 
 
+// create chapter get render
 app.get(
   "/course/:id/createChapter",
   connectEnsureLogin.ensureLoggedIn(),
@@ -335,6 +368,7 @@ app.get(
   },
 );
 
+// create chapter post
 app.post(
   "/course/:id/createChapter",
   connectEnsureLogin.ensureLoggedIn(),
@@ -364,27 +398,46 @@ app.post(
   },
 );
 
-app.get('/chapter/:id', async (request, response) => {
-  try {
-    const {
-      id
-    } = request.params;
-    const chapter = await Chapter.findByPk(id);
-    if (!chapter) {
-      return response.status(404).json({
-        message: 'Chapter not found'
-      });
-    }
-    return response.json(chapter);
-  } catch (error) {
-    console.log(error);
-    return response.status(500).json({
-      message: 'Internal Server Error'
-    });
-  }
-});
+// chapter get according to id
+app.get(
+  `/course/:courseId/chapter/:chapterId`,
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const courseId = request.params.courseId;
+    const chapterId = request.params.chapterId;
+    const role = request.user.role;
 
-app.delete('/chapter/:chapterId', async (request, response) => {
+    try {
+      const course = await Course.findOne({ where: { id: courseId } });
+      const chapter = await Chapter.findOne({where: {id: chapterId}});
+      const page = await Page.findAll(); // Assuming you have a Page model
+
+      if (!course) {
+        response.status(404).json({ message: "Course not found" });
+        return;
+      }
+
+      if (request.accepts("html")) {
+        response.render("chapter", {
+          role: role,
+          course: course,
+          chapter: chapter,
+          page: page, // Add this line to pass the 'page' variable
+          csrfToken: request.csrfToken(),
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      response.status(500).json({ message: "Internal Server Error" });
+    }
+  },
+);
+// chapter get according to id
+
+
+// delete chapter
+app.delete('/chapter/:chapterId', connectEnsureLogin.ensureLoggedIn(),
+async (request, response) => {
   try {
     const {
       chapterId
@@ -408,6 +461,38 @@ app.delete('/chapter/:chapterId', async (request, response) => {
     });
   }
 });
+
+// delete chapter
+
+// create page render
+app.get('/course/:courseId/chapter/:chapterId/createPage', connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
+  const chapterId = request.params.chapterId;
+  const courseId = request.params.courseId; // Corrected parameter name
+
+  try {
+    const chapter = await Chapter.findOne({ where: { id: chapterId } }); // Corrected where clause
+    const course = await Course.findOne({ where: { id: courseId } });
+
+    if (!chapter) {
+      response.status(404).json({ message: "Chapter not found" }); // Updated error message
+      return;
+    }
+
+    if (request.accepts("html")) {
+      response.render("createPage", {
+        chapter: chapter,
+        course: course,
+        chapterId: chapterId, // Added chapterId to the object
+        csrfToken: request.csrfToken(),
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+
 
 
 app.get(
