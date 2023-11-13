@@ -213,40 +213,45 @@ function deleteCourse(courseItem) {
       <hr />
       <h3 class="mb-8 mt-12 text-xl font-semibold">Pages</h3>
       <% if (page && page.length > 0) { %>
-      <ul>
-        <% page.forEach(function(pageItem) { %> 
-          <% if (pageItem.chapterId === chapter.id) { %>
-        <li>
-          <div class="mb-4 cursor-pointer rounded bg-gray-200 p-4 transition ease-in-out hover:bg-gray-300">
-            <h2 class="flex text-lg font-bold">
-              <%= pageItem.title %> <% if (role === 'educator') { %>
-              <a href="#!" class="button orange" onclick="deletePage('<%= pageItem.id %>')">Delete</a>
-              <% } %>
-              <span class="mx-4 text-sm"></span><% if (role === 'student') { %>
-              <span
-                ><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="25" viewBox="0 0 50 50">
-                  <path d="M 25 3 C 18.363281 3 13 8.363281 13 15 L 13 20 L 9 20 C 7.355469 20 6 21.355469 6 23 L 6 47 C 6 48.644531 7.355469 50 9 50 L 41 50 C 42.644531 50 44 48.644531 44 47 L 44 23 C 44 21.355469 42.644531 20 41 20 L 37 20 L 37 15 C 37 8.363281 31.636719 3 25 3 Z M 25 5 C 30.566406 5 35 9.433594 35 15 L 35 20 L 15 20 L 15 15 C 15 9.433594 19.433594 5 25 5 Z M 9 22 L 41 22 C 41.554688 22 42 22.445313 42 23 L 42 47 C 42 47.554688 41.554688 48 41 48 L 9 48 C 8.445313 48 8 47.554688 8 47 L 8 23 C 8 22.445313 8.445313 22 9 22 Z M 25 30 C 23.300781 30 22 31.300781 22 33 C 22 33.898438 22.398438 34.6875 23 35.1875 L 23 38 C 23 39.101563 23.898438 40 25 40 C 26.101563 40 27 39.101563 27 38 L 27 35.1875 C 27.601563 34.6875 28 33.898438 28 33 C 28 31.300781 26.699219 30 25 30 Z"></path>
-                </svg>
-              </span>
-              <% } %>
-            </h2>
-          </div>
-        </li>
-        <% } %> <% }); %>
-      </ul>
+        <%= console.log(page) %>
+
+        <ul>
+          <% page.forEach(function (page) { %>
+            <% if (page.chapterId === chapter.id) { %>
+              <li>
+                <div class="course-card">
+                  <h2 class="text-lg font-bold">
+                    <%= page.title %>
+                  </h2>
+                  <a href="/course/<%= course.id %>/chapter/<%= chapter.id %>/Page/<%= page.id %>" class="button blue">
+                    View Page
+                  </a>
+                  <% if (role === 'educator') { %>
+                    <a href="#!" class="button red ml-2" onclick="deleteChapter('<%= chapter.id %>')">Delete</a>
+                  <% } %>
+                  <% if (role === 'student') { %>
+                    <span class="ml-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="25" viewBox="0 0 50 50">
+                      </svg>
+                    </span>
+                  <% } %>
+                </div>
+              </li>
+            <% } %>
+            
+          <% }); %>
+        </ul>
       <% } else { %>
-      <p>No Pages available</p>
-      <% } %> <% if (role === 'educator') { %>
+        <p>No Pages available</p>
+      <% } %>
+      <% if (role === 'educator') { %>
       <div class="mt-6 text-left">
         <a href="/course/<%= course.id %>/chapter/<%= chapter.id %>/createPage" class="button green">Create Page</a>
       </div>
       <% } %>
     </div>
-
     <a href="/home" style="position: absolute; font-weight: bold; color: #ffffff; top: 10px; left: 10px; ">Home </a>
     <a href="/course/<%= course.id %>" style="position: absolute; color: #ffffff; font-weight: bold; top: 10px; left: 75px;">Course Details</a>
     <a href="/course/<%= course.id %>/chapter/<%= chapter.id %>" style="position: absolute; color: #ffffff; font-weight: bold; top: 10px; left: 210px;">Chapter Details</a>
-    
-
   </body>
 </html>

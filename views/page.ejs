@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <title>Course Details</title>
+    <link href="../public/css/styles.css" rel="stylesheet" />
+    <style>
+      body, html {
+          height: auto;
+      }
+
+      body {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin: 0;
+          padding: 0;
+          background: #4CAF50;
+          font-family: Arial, sans-serif;
+      }
+
+              .container {
+                  background: white;
+                  padding: 10px;
+                  border-radius: 10px;
+                  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+                  width: 95%;
+                  margin-top: 60px;
+                  margin-bottom: 10px;
+                  height: auto;
+              }
+
+              .header {
+                  background: linear-gradient(135deg, #4CAF50, #2196F3);
+                  color: white;
+                  padding: 10px;
+                  border-radius: 10px 10px 10px 10px;
+                  text-align: center;
+                  display: flex;
+                  align-items: top;
+                  justify-content: space-between;
+              }
+
+              .header h2 {
+                  font-size: 24px;
+                  font-weight: bold;
+              }
+              .header-links {
+                  display: flex;
+                  flex-direction: column;
+              }
+
+              .header-top{
+                  align-items: top;
+                  text-align: left;
+              }
+
+
+              a.button {
+                  color: white;
+                  text-decoration: none;
+                  font-weight: bold;
+                  padding: 10px 20px;
+                  border-radius: 5px;
+                  text-align: center;
+                  display: inline-block;
+                  margin: 10px;
+                  transition: background 0.3s;
+                  font-size: medium;
+
+              }
+
+              a.button.yellow {
+                  background: #bccb17;
+              }
+
+              a.button.yellow:hover {
+                  background: #edce45;
+              }
+
+              a.button.red {
+                  background: #ed4545;
+              }
+
+              a.button.red:hover {
+                  background: #eb2c05;
+              }
+
+              a.button.blue {
+                  background: hsl(207, 74%, 36%);
+              }
+
+              a.button.blue:hover {
+                  background: #185c8a;
+              }
+
+              a.button.green {
+                  background: #47db34;
+              }
+
+              a.button.green:hover {
+                  background: #0f9a1b;
+              }
+
+              a.button.orange {
+                  background: #dba334;
+              }
+
+              a.button.orange:hover {
+                  background: #de9b27;
+              }
+
+
+              .course-card {
+                  background: #F5F5F5;
+                  padding: 20px;
+                  border-radius: 10px;
+                  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+                  margin: 10px 0;
+                  cursor: pointer;
+                  transition: box-shadow 0.3s;
+              }
+
+              .course-card:hover {
+                  box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.3);
+              }
+
+              .course-card h2 {
+                  font-size: 18px;
+                  font-weight: bold;
+                  margin: 10px 0;
+              }
+
+              .course-card p {
+                  font-size: 14px;
+                  color: #555;
+                  margin: 10px 0;
+              }
+
+
+            a {
+              display: block;
+              color: #000000;
+              text-align: center;
+              padding: 10px 12px;
+              text-decoration: none;
+            }
+
+            a:hover:not(.active) {
+              background-color: rgb(6, 191, 62);
+              border-radius: 5px 5px 5px 5px;
+            }
+    </style>
+
+    <script>
+        var token = document
+              .querySelector('meta[name="csrf-token"]')
+              .getAttribute("content");
+
+              function deleteChapter(chapterItem) {
+        console.log(chapterItem);
+
+        fetch(`/chapter/${chapterItem}`, {
+          method: "delete",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            _csrf: token,
+          }),
+        })
+          .then((res) => {
+            window.location.reload();
+          })
+          .catch((err) => console.error(err));
+      }
+
+      function deleteCourse(courseItem) {
+        console.log(courseItem);
+
+        fetch(`/chapter/${courseItem}`, {
+          method: "delete",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            _csrf: token,
+          }),
+        })
+          .then((res) => {
+            window.location.reload();
+          })
+          .catch((err) => console.error(err));
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container mx-auto">
+      <div class="header">
+        <div class="header-links">
+          <h2 class="header"><%= page.title %></h2>
+          <div></div>
+        </div>
+      </div>
+      <hr />
+      <h3 class="mb-8 mt-12 text-xl font-semibold">Page Content:-</h3>
+      <%= console.log(page.lenght) %>
+
+      <% if (page && page.length > 0) { %> 
+
+        <%= console.log(page.content) 
+        %> else { %>
+      <p>No Page Content available</p>
+      <% } %> 
+
+    </div>
+    <a href="/home" style="position: absolute; font-weight: bold; color: #ffffff; top: 10px; left: 10px; ">Home </a>
+    <a href="/course/<%= course.id %>" style="position: absolute; color: #ffffff; font-weight: bold; top: 10px; left: 75px;">Course Details</a>
+    <a href="/course/<%= course.id %>/chapter/<%= chapter.id %>" style="position: absolute; color: #ffffff; font-weight: bold; top: 10px; left: 210px;">Chapter Details</a>
+  </body>
+</html>

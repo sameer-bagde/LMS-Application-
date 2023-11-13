@@ -225,8 +225,11 @@ function deleteCourse(courseItem) {
       </div>
       <h3 class="mb-8 mt-12 text-xl font-semibold">Chapters</h3>
       <% if (chapter && chapter.length > 0) { %>
+        <%= console.log(chapter) %>
+
         <ul>
           <% chapter.forEach(function(chapterItem) { %>
+            <%= console.log(chapterItem.courseId) %>
             <% if (chapterItem.courseId === course.id) { %>
               <li>
                 <div class="course-card">
@@ -239,7 +242,6 @@ function deleteCourse(courseItem) {
                       <% if (role === 'educator') { %>
                         <a href="#!" class="button red ml-2" onclick="deleteChapter('<%= chapterItem.id %>')">Delete</a>
                       <% } %>
-
 
                       <% if (role === 'student') { %>
                         <span class="ml-2">

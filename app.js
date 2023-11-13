@@ -202,6 +202,7 @@ app.get(
     const course = await Course.findAll();
     const chapter = await Chapter.findAll();
     const role = request.user.role;
+    const user = request.user.id;
     try {
       if (request.accepts("html")) {
         response.render("home", {
@@ -210,6 +211,7 @@ app.get(
           role,
           course,
           chapter,
+          user,
           csrfToken: request.csrfToken(),
         });
       }
@@ -261,6 +263,7 @@ app.get(
   `/course/:id`,
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
+
     const courseId = request.params.id;
     const role = request.user.role;
 
@@ -403,24 +406,31 @@ app.get(
   `/course/:courseId/chapter/:chapterId`,
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
+    const { title, content } = request.body;
+
     const courseId = request.params.courseId;
     const chapterId = request.params.chapterId;
     const role = request.user.role;
 
     try {
-      const course = await Course.findOne({ where: { id: courseId } });
-      const chapter = await Chapter.findOne({where: {id: chapterId}});
-      const page = await Page.findAll(); // Assuming you have a Page model
+      const course = await Course.findByPk(courseId);
+      const chapter = await Chapter.findByPk(chapterId);
+      const page = await Page.findAll();
 
       if (!course) {
         response.status(404).json({ message: "Course not found" });
+        return;
+      } else if (!chapter) {
+        response.status(404).json({ message: "Chapter not found" });
         return;
       }
 
       if (request.accepts("html")) {
         response.render("chapter", {
+          title:title,
           role: role,
           course: course,
+          content:content,
           chapter: chapter,
           page: page, // Add this line to pass the 'page' variable
           csrfToken: request.csrfToken(),
@@ -468,6 +478,7 @@ async (request, response) => {
 app.get('/course/:courseId/chapter/:chapterId/createPage', connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
   const chapterId = request.params.chapterId;
   const courseId = request.params.courseId; // Corrected parameter name
+  
 
   try {
     const chapter = await Chapter.findOne({ where: { id: chapterId } }); // Corrected where clause
@@ -489,6 +500,92 @@ app.get('/course/:courseId/chapter/:chapterId/createPage', connectEnsureLogin.en
   } catch (error) {
     console.error(error);
     response.status(500).json({ message: "Internal Server Error" });
+  }
+});
+// create page render
+
+// post for create page
+app.post(
+  "/course/:courseId/chapter/:chapterId/createPage",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const { title, content } = request.body;
+    const courseId = request.params.courseId;
+    const chapterId = request.params.chapterId;
+
+    try {
+      const course = await Course.findOne({ where: { id: courseId } });
+      const chapter = await Chapter.findOne({ where: { id: chapterId } });
+
+      // Fetch existing pages for the chapter (if needed for rendering)
+      const pages = await Page.findAll({ where: { chapterId: chapterId } });
+
+      if (!chapter) {
+        response.status(404).json({ message: "Chapter not found" });
+        return;
+      } else if (!course) {
+        response.status(404).json({ message: "Course not found" });
+        return;
+      }
+
+      // Check if a page with the same title already exists (if needed)
+      const existingPage = pages.find((page) => page.title === title);
+      if (existingPage) {
+        response.status(400).json({ message: "Page with the same title already exists" });
+        return;
+      }
+
+      // Create a new page
+      const newPage = await Page.create({
+        title: title,
+        content: content,
+        chapterId: chapterId,
+        isComplete: false, // Assuming isComplete should have a default value
+        courseId: courseId,
+      });
+
+      // Redirect to the created page
+      response.redirect(`/page/${newPage.id}`);
+    } catch (error) {
+      console.error(error);
+      response.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+);
+
+
+
+
+
+app.get('/course/:courseId/chapter/:chapterId/page/:pageId', async (request, response) => {
+  const pageId = request.params.pageId;
+  const { title, content } = request.body;
+  const courseId = request.params.courseId;
+  const chapterId = request.params.chapterId;
+
+  try {
+    const chapter = await Chapter.findByPk(chapterId);
+    const course = await Course.findByPk(courseId);
+    const page = await Page.findOne({ where: { id: pageId } });
+
+    if (!page) {
+      response.status(404).json({ message: 'Page not found' });
+      return;
+    }
+
+    if (request.accepts('html')) {
+      response.render('page', {
+        title:title,
+        content,
+        page: page,
+        chapter,
+        course,
+        csrfToken: request.csrfToken(),
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ message: 'Internal Server Error' });
   }
 });
 

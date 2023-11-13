@@ -112,15 +112,15 @@
       <div>
         <h1 class="header">Create New Page</h1>
       </div>
-      <form action="/course/<%= course.id %>/createChapter" method="POST">
+      <form action="/course/<%= course.id %>/chapter/<%= chapter.id %>/createPage" method="POST">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="mb-4">
           <label for="title" class="form-label">Page Title</label>
           <input type="text" id="title" name="title" placeholder="Enter the Page Title" class="form-input" required>
         </div>
         <div class="mb-4">
-          <label for="description" class="form-label">Page Content</label>
-          <textarea id="description" name="description" placeholder="Enter the Page Content" class="form-textarea" rows="6" maxlength="500" required></textarea>
+          <label for="content" class="form-label">Page Content</label>
+          <textarea id="content" name="content" placeholder="Enter the Page Content" class="form-textarea" rows="6"  required></textarea>
         </div>
         <button type="submit" class="form-button">Create Page</button>
       </form>
