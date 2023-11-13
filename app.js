@@ -2,7 +2,7 @@
 /* eslint-disable no-undef */
 const express = require("express");
 const app = express();
-const { Course, User, Chapter, Page } = require("./models");
+const { Course, User, Chapter, Page, Enrollment} = require("./models");
 var csrf = require("tiny-csrf");
 const bodyParser = require("body-parser");
 var cookieParser = require("cookie-parser");
@@ -193,35 +193,65 @@ app.get("/", async (request, response) => {
   }
 });
 
-app.get(
-  "/home",
-  connectEnsureLogin.ensureLoggedIn(),
-  async (request, response) => {
-    const firstName = request.user.firstName;
-    const lastName = request.user.lastName;
-    const course = await Course.findAll();
-    const chapter = await Chapter.findAll();
-    const role = request.user.role;
-    const user = request.user.id;
-    try {
+app.get("/home", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
+  const user = request.user.id;
+  const firstName = request.user.firstName;
+  const lastName = request.user.lastName;
+  const course = await Course.findAll();
+  const chapter = await Chapter.findAll();
+  const role = request.user.role;
+  try {
+      // Fetch the enrolled courses for the user
+      const enrolledCourses = await Enrollment.findAll({ where: { userId: user } });
+
       if (request.accepts("html")) {
-        response.render("home", {
-          firstName,
-          lastName,
-          role,
-          course,
-          chapter,
-          user,
-          csrfToken: request.csrfToken(),
-        });
+          response.render("home", {
+              firstName,
+              lastName,
+              role,
+              course,
+              chapter,
+              user,
+              enrolledCourses,  // Include enrolledCourses in the data object
+              csrfToken: request.csrfToken(),
+          });
+          console.log(enrolledCourses);
       }
-    } catch (error) {
+  } catch (error) {
       console.log(error);
       response.status(500).json({ message: "Internal Server Error" });
-    }
-  },
-);
+  }
+});
 
+app.get("/enrolledCourse/:course.id", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
+  const user = request.user.id;
+  const firstName = request.user.firstName;
+  const lastName = request.user.lastName;
+  const course = await Course.findAll();
+  const chapter = await Chapter.findAll();
+  const role = request.user.role;
+  try {
+      // Fetch the enrolled courses for the user
+      const enrolledCourses = await Enrollment.findAll({ where: { userId: user } });
+
+      if (request.accepts("html")) {
+          response.render("home", {
+              firstName,
+              lastName,
+              role,
+              course,
+              chapter,
+              user,
+              enrolledCourses,  // Include enrolledCourses in the data object
+              csrfToken: request.csrfToken(),
+          });
+          console.log(enrolledCourses);
+      }
+  } catch (error) {
+      console.log(error);
+      response.status(500).json({ message: "Internal Server Error" });
+  }
+});
 //
 
 app.get(
@@ -290,55 +320,6 @@ app.get(
     }
   },
 );
-
-// delete course by my course
-
-// app.get('/course/:courseId',connectEnsureLogin.ensureLoggedIn(),
-// async (request, response) => {
-//   try {
-//     const {
-//       courseId
-//     } = request.params;
-//     const course = await Chapter.findByPk(courseId);
-//     if (!course) {
-//       return response.status(404).json({
-//         message: 'Course not found'
-//       });
-//     }
-//     return response.json(course);
-//   } catch (error) {
-//     console.log(error);
-//     return response.status(500).json({
-//       message: 'Internal Server Error'
-//     });
-//   }
-// });
-
-// app.delete('/course/:courseId', connectEnsureLogin.ensureLoggedIn(),
-// async (request, response) => {
-//   try {
-//     const {
-//       courseId
-//     } = request.params;
-
-//     const course = await Chapter.findByPk(courseId);
-//     if (!course) {
-//       return response.status(404).json({
-//         message: 'Course not found'
-//       });
-//     }
-
-//     await course.destroy();
-//     return response.json({
-//       message: 'Course deleted successfully'
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     return response.status(500).json({
-//       message: 'Internal Server Error'
-//     });
-//   }
-// });
 
 
 // create chapter get render
@@ -625,13 +606,40 @@ app.delete('/page/:pageId', connectEnsureLogin.ensureLoggedIn(), async (request,
 });
 
 // delete page
+// course enrollement
+app.put("/courseEnrolled/:courseId", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
+  const courseId = request.params.courseId;
+  const currentUserId = request.user.id;
 
+  try {
+    // Check if the user is already enrolled in the course
+    const existingEnrollment = await Enrollment.findOne({
+      where: { userId: currentUserId, courseId },
+    });
 
+    if (existingEnrollment) {
+      return response.status(400).json({ message: "You are already enrolled in this course." });
+    }
 
+    // Record the enrollment in the Enrollments model
+    const newEnrollment = await Enrollment.create({
+      userId: currentUserId,
+      courseId,
+      enrollmentStatus: true, // Set enrollmentStatus to true
+    });
 
+    // Fetch the associated Course model
+    const enrolledCourse = await Course.findByPk(courseId);
 
-
-
+    response.status(200).json({
+      message: "Enrolled successfully",
+      enrolledCourse: enrolledCourse.toJSON(), // Include course information in the response
+    });
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
 
 
@@ -665,5 +673,8 @@ app.post(
     }
   },
 );
+
+
+
 
 module.exports = app;

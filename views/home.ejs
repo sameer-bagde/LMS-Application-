@@ -166,6 +166,24 @@ a.button.orange {
         .getAttribute("content");
 
 
+        function courseEnrolled(course) {
+  console.log(course);
+
+  fetch(`/courseEnrolled/${course}`, {
+    method: "put",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      _csrf: token,
+    }),
+  })
+    .then((res) => {
+      window.location.reload();
+    })
+    .catch((err) => console.error(err));
+}
+
     </script>
   </head>
   <body>
@@ -174,6 +192,8 @@ a.button.orange {
         <div class="header-links">
           <h2 class="header">Wellcome <%= firstName %> <%= lastName %></h2>
           <div>
+
+
             <% if (role === 'educator') { %>
             <a href="/createCourse/<%= course.id %>" class="button blue">Create Course</a>
             <a href="/myCourse" class="button green">My Course</a>
@@ -187,26 +207,11 @@ a.button.orange {
         </div>
 
       </div>
-<!-- to view courses -->
-
-
-<!-- <hr>
-<h3 class="text-2xl font-semibold">Enrolled Courses</h3>
-      <div>
-        <% if (role === 'student') { %>
-          <% course.forEach(function(course) { %> 
-            <div class="course-card">
-              <h2><%= course.title %></h2>
-              <p>Course ID: <%= course.id %></p>
-              <p>Educator: <%= course.educatorName %></p>
-              <a href="/enrolledCourse/<%= course.id %>" class="button blue">
-                View Course
-              </a>
-            </div> 
-          <% }); %>
-        <% } %>
-      </div> -->
-      
+      <% if (role === 'student') { %>
+        <hr />
+        <h3 class="text-2xl font-semibold">Enrolled Courses</h3>
+      <%- include("enrolledCourse.ejs", { enrolledCourses: enrolledCourses }) %>
+      <% } %>
       <hr />
       
       <h3 class="text-2xl font-semibold">Available Courses</h3>
@@ -229,11 +234,10 @@ a.button.orange {
             <h2><%= course.title %></h2>
             <p>Course ID: <%= course.id %></p>
             <p>Educator: <%= course.educatorName %></p>
-            id
             <a href="/course/<%= course.id %>" class="button blue">
               View Course
             </a>
-            <a href="/enrollcourse/<%= course.id %>" class="button green">Enrol</a>
+            <a href="/enrolledCourse/<%= course.id %>" class="button green ml-2" onclick="courseEnrolled('<%= course.id %>')">Enroll</a>
           </div>
           <% }); %>
         <% } %>

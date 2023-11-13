@@ -1,0 +1,16 @@
+<% try { %>
+  <% course.forEach(function(course) { %>
+    <% const isEnrolled = enrolledCourses && enrolledCourses.some(enrollment => enrollment.courseId === course.id && enrollment.enrollmentStatus === true); %>
+    <% if (isEnrolled) { %>
+      <div class="course-card">
+        <h2><%= course.title %></h2>
+        <p>Course ID: <%= course.id %></p>
+        <p>Educator: <%= course.educatorName %></p>
+        <span class="enrolled">Enrolled</span>
+        <a href="/course/<%= course.id %>" class="button blue">View</a>
+      </div>
+    <% } %>
+  <% }); %>
+<% } catch (error) { %>
+  <p>Error: <%= error.message %></p>
+<% } %>

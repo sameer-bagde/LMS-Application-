@@ -17,7 +17,7 @@ module.exports = {
       },
       enrollmentStatus: {
         type: Sequelize.BOOLEAN,
-        default: false,        
+        defaultValue: false
       },
       createdAt: {
         allowNull: false,

@@ -34,4 +34,3 @@ Here's how to use the application:
 1. Sign in to your account or sign up if you're a new user.
 2. Depending on your role as a student or educator, you'll have access to the respective features mentioned above.
 3. Explore and enjoy the learning experience!
-

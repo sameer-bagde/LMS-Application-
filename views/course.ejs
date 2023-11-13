@@ -236,9 +236,12 @@ function deleteCourse(courseItem) {
                     <h2 class="text-lg font-bold">
                       <%= chapterItem.title %>
                     </h2>
+                    <% if (role === 'educator') { %>
                     <a href="/course/<%= course.id %>/chapter/<%= chapterItem.id %>" class="button blue">
                       View chapter
                     </a>
+                    <% } %>
+
                       <% if (role === 'educator') { %>
                         <a href="#!" class="button red ml-2" onclick="deleteChapter('<%= chapterItem.id %>')">Delete</a>
                       <% } %>

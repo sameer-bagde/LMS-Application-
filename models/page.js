@@ -14,9 +14,10 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static addPage({ title, content }) {
+    static addPage({ title, content, userId}) {
       return Page.create({
         title: title,
+        userId:userId,
         content: content.length(1024) ,
       });
     }

@@ -10,8 +10,21 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+    Enrollment.belongsTo(models.Course, { foreignKey: 'courseId' });
     }
+    setenrollmentStatus(bool) {
+      return this.update({ completed: bool });
+    }
+    static enrolledcourse(courseId) {
+      return this.findAll({
+        where: {
+          completed: true,
+          courseId: courseId,
+        },
+        order: [["id", "ASC"]],
+      });
+    }
+
   }
   Enrollment.init({
     userId: DataTypes.INTEGER,

@@ -15,10 +15,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "chapterId",
       });
     }
-    static addChapter({ title, description }) {
+    static addChapter({ title, description, userId }) {
       // define association here
       return Chapter.create({
         title: title,
+        userId:userId,
         description: description,
       });
     }
