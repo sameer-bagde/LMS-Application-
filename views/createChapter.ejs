@@ -124,5 +124,14 @@
         <button type="submit" class="form-button">Create Chapter</button>
       </form>
     </div>
+    <div>
+      <% if (messages && messages.error && messages.error.length > 0)  { %>
+        <% var i = 0; %>
+        <% while (i < messages.error.length) { %>
+            <p><%= messages.error[i] %></p>
+          <% i++; %>
+        <% } %>
+      <% } %>
+    </div>
   </body>
 </html>

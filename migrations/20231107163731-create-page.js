@@ -13,7 +13,8 @@ module.exports = {
         type: Sequelize.STRING,
       },
       content: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(50000),
+        allowNull: false,
       },
       chapterId: {
         type: Sequelize.INTEGER,

@@ -154,47 +154,6 @@
             }
     </style>
 
-    <script>
-        var token = document
-              .querySelector('meta[name="csrf-token"]')
-              .getAttribute("content");
-
-              function deleteChapter(chapterItem) {
-        console.log(chapterItem);
-
-        fetch(`/chapter/${chapterItem}`, {
-          method: "delete",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            _csrf: token,
-          }),
-        })
-          .then((res) => {
-            window.location.reload();
-          })
-          .catch((err) => console.error(err));
-      }
-
-      function deleteCourse(courseItem) {
-        console.log(courseItem);
-
-        fetch(`/chapter/${courseItem}`, {
-          method: "delete",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            _csrf: token,
-          }),
-        })
-          .then((res) => {
-            window.location.reload();
-          })
-          .catch((err) => console.error(err));
-      }
-    </script>
   </head>
   <body>
     <div class="container mx-auto">
@@ -204,20 +163,14 @@
           <div></div>
         </div>
       </div>
-      <hr />
-      <h3 class="mb-8 mt-12 text-xl font-semibold">Page Content:-</h3>
-      <%= console.log(page.lenght) %>
-
-      <% if (page && page.length > 0) { %> 
-
-        <%= console.log(page.content) 
-        %> else { %>
-      <p>No Page Content available</p>
-      <% } %> 
-
+      <div>
+        <h3 class="mb-8 mt-8 text-xl font-semibold">Content:</h3>
+        <p><%= page.content %></p>
+      </div>
     </div>
     <a href="/home" style="position: absolute; font-weight: bold; color: #ffffff; top: 10px; left: 10px; ">Home </a>
     <a href="/course/<%= course.id %>" style="position: absolute; color: #ffffff; font-weight: bold; top: 10px; left: 75px;">Course Details</a>
     <a href="/course/<%= course.id %>/chapter/<%= chapter.id %>" style="position: absolute; color: #ffffff; font-weight: bold; top: 10px; left: 210px;">Chapter Details</a>
+    <a href="/course/<%= course.id %>/chapter/<%= chapter.id %>/page/<%= page.id %>" style="position: absolute; color: #ffffff; font-weight: bold; top: 10px; left: 350px;">Page Details</a>
   </body>
 </html>

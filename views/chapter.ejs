@@ -159,28 +159,13 @@ body {
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
 
-        function deleteChapter(chapterItem) {
-  console.log(chapterItem);
+        function deletePage(pageItem) {
+  // Assuming token is a global variable or defined elsewhere
+  var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 
-  fetch(`/chapter/${chapterItem}`, {
-    method: "delete",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      _csrf: token,
-    }),
-  })
-    .then((res) => {
-      window.location.reload();
-    })
-    .catch((err) => console.error(err));
-}
+  console.log(pageItem);
 
-function deleteCourse(courseItem) {
-  console.log(courseItem);
-
-  fetch(`/chapter/${courseItem}`, {
+  fetch(`/page/${pageItem}`, {
     method: "delete",
     headers: {
       "Content-Type": "application/json",
@@ -213,21 +198,19 @@ function deleteCourse(courseItem) {
       <hr />
       <h3 class="mb-8 mt-12 text-xl font-semibold">Pages</h3>
       <% if (page && page.length > 0) { %>
-        <%= console.log(page) %>
-
         <ul>
-          <% page.forEach(function (page) { %>
-            <% if (page.chapterId === chapter.id) { %>
+          <% page.forEach(function (pageItem) { %>
+            <% if (pageItem.chapterId === chapter.id) { %>
               <li>
                 <div class="course-card">
                   <h2 class="text-lg font-bold">
-                    <%= page.title %>
+                    <%= pageItem.title %>
                   </h2>
-                  <a href="/course/<%= course.id %>/chapter/<%= chapter.id %>/Page/<%= page.id %>" class="button blue">
+                  <a href="/course/<%= course.id %>/chapter/<%= chapter.id %>/Page/<%= pageItem.id %>" class="button blue">
                     View Page
                   </a>
                   <% if (role === 'educator') { %>
-                    <a href="#!" class="button red ml-2" onclick="deleteChapter('<%= chapter.id %>')">Delete</a>
+                    <a href="#!" class="button red ml-2" onclick="deletePage('<%= pageItem.id %>')">Delete</a>
                   <% } %>
                   <% if (role === 'student') { %>
                     <span class="ml-2">

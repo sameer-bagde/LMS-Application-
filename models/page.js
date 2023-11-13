@@ -17,14 +17,14 @@ module.exports = (sequelize, DataTypes) => {
     static addPage({ title, content }) {
       return Page.create({
         title: title,
-        content: content,
+        content: content.length(1024) ,
       });
     }
   }
   Page.init(
     {
       title: DataTypes.STRING,
-      content: DataTypes.TEXT,
+      content: DataTypes.STRING,
       chapterId: DataTypes.INTEGER,
       isComplete: DataTypes.BOOLEAN,
     },

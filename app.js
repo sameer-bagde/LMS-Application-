@@ -380,26 +380,26 @@ app.post(
     const courseId = request.params.id;
 
     try {
-      const course = await Course.findOne({ where: { id: courseId } });
-      const chapter = await Chapter.findAll({ where: { courseId: courseId } });
-
-      if (!course) {
-        response.status(404).json({ message: "Course not found" });
+      // Check if a chapter with the same title already exists in the course
+      const existingChapter = await Chapter.findOne({ where: { title: title, courseId: courseId } });
+      if (existingChapter) {
+        response.status(400).json({ message: "Chapter with the same title already exists in this course" });
         return;
       }
       const newChapter = await Chapter.create({
         title: title,
         description: description,
-        chapter,
-        courseId
+        courseId: courseId,
       });
-      response.redirect(`chapter/${newChapter.id}`); // Redirect to the course page after creating the chapter
+
+      response.redirect(`/course/${courseId}/chapter/${newChapter.id}`); // Redirect to the newly created chapter
     } catch (error) {
       console.error(error);
       response.status(500).json({ message: "Internal Server Error" });
     }
-  },
+  }
 );
+
 
 // chapter get according to id
 app.get(
@@ -502,7 +502,6 @@ app.get('/course/:courseId/chapter/:chapterId/createPage', connectEnsureLogin.en
     response.status(500).json({ message: "Internal Server Error" });
   }
 });
-// create page render
 
 // post for create page
 app.post(
@@ -534,7 +533,7 @@ app.post(
         response.status(400).json({ message: "Page with the same title already exists" });
         return;
       }
-
+      
       // Create a new page
       const newPage = await Page.create({
         title: title,
@@ -542,10 +541,12 @@ app.post(
         chapterId: chapterId,
         isComplete: false, // Assuming isComplete should have a default value
         courseId: courseId,
+        // Add this to your Sequelize configuration
+        logging: console.log,
       });
 
       // Redirect to the created page
-      response.redirect(`/page/${newPage.id}`);
+      response.redirect(`/course/${courseId}/chapter/${chapterId}/page/${newPage.id}`);
     } catch (error) {
       console.error(error);
       response.status(500).json({ message: "Internal Server Error" });
@@ -553,41 +554,83 @@ app.post(
   }
 );
 
+app.get(
+  `/course/:courseId/chapter/:chapterId/page/:pageId`,
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const { title, content } = request.params; // Use params for route parameters
 
+    const courseId = request.params.courseId;
+    const chapterId = request.params.chapterId;
+    const pageId = request.params.pageId; // Added pageId
+    const role = request.user.role;
 
+    try {
+      const course = await Course.findByPk(courseId);
+      const chapter = await Chapter.findByPk(chapterId);
 
+      // Use findOne to get a specific page based on pageId
+      const page = await Page.findOne({ where: { id: pageId } });
 
-app.get('/course/:courseId/chapter/:chapterId/page/:pageId', async (request, response) => {
-  const pageId = request.params.pageId;
-  const { title, content } = request.body;
-  const courseId = request.params.courseId;
-  const chapterId = request.params.chapterId;
+      if (!course) {
+        response.status(404).json({ message: "Course not found" });
+        return;
+      } else if (!chapter) {
+        response.status(404).json({ message: "Chapter not found" });
+        return;
+      }
 
+      if (request.accepts("html")) {
+        response.render("page", {
+          title: title,
+          role: role,
+          course: course,
+          content: content,
+          chapter: chapter,
+          page: page, // Pass the specific page
+          csrfToken: request.csrfToken(),
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      response.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+);
+
+// delete page
+app.delete('/page/:pageId', connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
   try {
-    const chapter = await Chapter.findByPk(chapterId);
-    const course = await Course.findByPk(courseId);
-    const page = await Page.findOne({ where: { id: pageId } });
+    const { pageId } = request.params;
+
+    // Corrected the model from Chapter to Page
+    const page = await Page.findByPk(pageId);
 
     if (!page) {
-      response.status(404).json({ message: 'Page not found' });
-      return;
-    }
-
-    if (request.accepts('html')) {
-      response.render('page', {
-        title:title,
-        content,
-        page: page,
-        chapter,
-        course,
-        csrfToken: request.csrfToken(),
+      return response.status(404).json({
+        message: 'Page not found'
       });
     }
+
+    await page.destroy();
+    return response.json({
+      message: 'Page deleted successfully'
+    });
   } catch (error) {
-    console.error(error);
-    response.status(500).json({ message: 'Internal Server Error' });
+    console.log(error);
+    return response.status(500).json({
+      message: 'Internal Server Error'
+    });
   }
 });
+
+// delete page
+
+
+
+
+
+
 
 
 
