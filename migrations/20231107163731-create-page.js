@@ -13,8 +13,11 @@ module.exports = {
         type: Sequelize.STRING,
       },
       content: {
-        type: Sequelize.STRING(50000),
+        type: Sequelize.TEXT,
         allowNull: false,
+        validate: {
+          len: [0, 50000],
+        },
       },
       chapterId: {
         type: Sequelize.INTEGER,

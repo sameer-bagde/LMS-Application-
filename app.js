@@ -293,10 +293,11 @@ app.get(
   `/course/:id`,
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-
     const courseId = request.params.id;
     const role = request.user.role;
-
+    const userId = request.user.id; // Get the current user's ID
+    const enrollments = await Enrollment.findAll({ where: { courseId: courseId, userId: userId } });
+    
     try {
       const course = await Course.findOne({ where: { id: courseId } });
       const chapter = await Chapter.findAll();
@@ -309,6 +310,8 @@ app.get(
       if (request.accepts("html")) {
         response.render("course", {
           role: role,
+          userId: userId, // Pass the user ID to the template
+          enrollments,
           course: course,
           chapter: chapter,
           csrfToken: request.csrfToken(),
@@ -322,12 +325,14 @@ app.get(
 );
 
 
+
 // create chapter get render
 app.get(
   "/course/:id/createChapter",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     const courseId = request.params.id;
+
     try {
       const course = await Course.findOne({ where: { id: courseId } });
       const chapter = await Chapter.findAll({ where: { courseId: courseId } });
@@ -489,17 +494,20 @@ app.post(
   "/course/:courseId/chapter/:chapterId/createPage",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
+    // Extracting data from the request body and URL parameters
     const { title, content } = request.body;
     const courseId = request.params.courseId;
     const chapterId = request.params.chapterId;
 
     try {
+      // Fetch the course and chapter based on the provided IDs
       const course = await Course.findOne({ where: { id: courseId } });
       const chapter = await Chapter.findOne({ where: { id: chapterId } });
 
       // Fetch existing pages for the chapter (if needed for rendering)
       const pages = await Page.findAll({ where: { chapterId: chapterId } });
 
+      // Check if the chapter and course exist
       if (!chapter) {
         response.status(404).json({ message: "Chapter not found" });
         return;
@@ -522,8 +530,6 @@ app.post(
         chapterId: chapterId,
         isComplete: false, // Assuming isComplete should have a default value
         courseId: courseId,
-        // Add this to your Sequelize configuration
-        logging: console.log,
       });
 
       // Redirect to the created page
@@ -534,6 +540,7 @@ app.post(
     }
   }
 );
+
 
 app.get(
   `/course/:courseId/chapter/:chapterId/page/:pageId`,
@@ -612,14 +619,6 @@ app.put("/courseEnrolled/:courseId", connectEnsureLogin.ensureLoggedIn(), async 
   const currentUserId = request.user.id;
 
   try {
-    // Check if the user is already enrolled in the course
-    const existingEnrollment = await Enrollment.findOne({
-      where: { userId: currentUserId, courseId },
-    });
-
-    if (existingEnrollment) {
-      return response.status(400).json({ message: "You are already enrolled in this course." });
-    }
 
     // Record the enrollment in the Enrollments model
     const newEnrollment = await Enrollment.create({

@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
   Page.init(
     {
       title: DataTypes.STRING,
-      content: DataTypes.STRING,
+      content: DataTypes.TEXT,
       chapterId: DataTypes.INTEGER,
       isComplete: DataTypes.BOOLEAN,
     },
