@@ -56,6 +56,9 @@ body {
             text-align: left;
         }
 
+
+
+
 a.button.orange {
     background: rgb(212, 142, 45);
 }
@@ -119,12 +122,22 @@ a.button.orange {
         .course-card {
             background: #F5F5F5;
             padding: 20px;
+            display: flex;
+            align-items: center;
             border-radius: 10px;
             box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
             margin: 10px 0;
             cursor: pointer;
             transition: box-shadow 0.3s;
         }
+
+        .card-content {
+  flex: 1;
+}
+
+.image-container {
+  margin-left: 20px; /* Adjust as needed */
+}
 
         .course-card:hover {
             box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.3);
@@ -141,8 +154,7 @@ a.button.orange {
             color: #555;
             margin: 10px 0;
         }
-
-
+        
       a {
         display: block;
         color: #000000;
@@ -155,34 +167,18 @@ a.button.orange {
         background-color: rgb(6, 191, 62);
         border-radius: 5px 5px 5px 5px;
       }
+
+      .small-image {
+      width: 100px;
+     height: auto;
+     }
     </style>
 
 <script>
   var token = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
-
-
-        
-// enrollment no.
-
-document.addEventListener('DOMContentLoaded', () => {
-  const enrollmentReport = document.getElementById('enrollmentReport');
-  const userIds = <%= JSON.stringify(userIds) %>; // Populate user IDs from the backend
-
-  userIds.forEach((currentUserId) => {
-    fetch(`/educatorEnrollmentReport/${currentUserId}`)
-      .then((response) => response.json())
-      .then((data) => {
-        data.forEach((courseEnrollment) => {
-          enrollmentReport.innerHTML += `Course ID: ${courseEnrollment.courseId}, Enrolled Students: ${courseEnrollment.enrollmentCount}</p>`;
-        });
-      })
-      .catch((error) => console.error('Error:', error));
-  });
-});
-
-  function courseEnrolled(course) {
+        function courseEnrolled(course) {
   console.log(course);
 
   fetch(`/courseEnrolled/${course}`, {
@@ -199,76 +195,50 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .catch((err) => console.error(err));
 }
-
     </script>
   </head>
   <body>
     <div class="container mx-auto">
       <div class="header">
         <div class="header-links">
-          <% if (role === 'educator') { %>
-            <h2 class="header">Wellcome  Educator: <%= firstName %> <%= lastName %></h2>
-            <% } else {%>
-              <h2 class="header">Wellcome Student: <%= firstName %> <%= lastName %></h2>
-
-           <%} %>
-
+          <h2 class="header">Wellcome <%= firstName %> <%= lastName %></h2>
           <div>
-            <% if (role === 'educator') { %>
-            <a href="/createCourse/<%= course.id %>" class="button blue">Create Course</a>
-            <a href="/educatorCourses" class="button orange">My Course</a>
-            <% } %>
           </div>
         </div>
         <div style="padding-top: 20px;">
           <a href="/changePassword" class="button yellow">Change Password</a>
           <a href="/signout" class="button red">Sign Out</a>
-          
         </div>
       </div>
 
-
-      <% if (role === 'educator') { %>
-        <h3 class="text-2xl font-semibold">Course Report</h3>
-        <div class="card-content" id="enrollmentReport"></div >
-      <% } %>
-
-
-
-        <div>
-          <% if (role === 'student') { %>
-            <hr />
-            <h3 class="text-2xl font-semibold">Enrolled Courses</h3>
-          <%- include("enrolledCourse.ejs", { enrolledCourses: enrolledCourses }) %>
-    
-          <% } %>
-          <hr />
-        </div>
-
-      <h3 class="text-2xl font-semibold">Available Courses</h3>
       <div>
-        <% if (role === 'educator') { %>
-          <% course.forEach(function(course) { %>
-            <div class="course-card">
-              <h2><%= course.title %></h2>
-              <p>Course ID: <%= course.id %></p>
-              <p>Educator: <%= course.educatorName %></p>
-              </div>
-          <% }); %>
-        <% } else { %>
-          <% course.forEach(function(course) { %>
-          <div class="course-card">
-            <h2><%= course.title %></h2>
-            <p>Course ID: <%= course.id %></p>
-            <p>Educator: <%= course.educatorName %></p>
-            <a href="/course/<%= course.id %>" class="button blue">
-              View Course
-            </a>
-            <a href="/enrolledCourse/<%= course.id %>" class="button green ml-2" onclick="courseEnrolled('<%= course.id %>')">Enroll</a>
-          </div>
-          <% }); %>
-        <% } %>
+      <hr />
       </div>
+      <h3 class="text-2xl font-semibold mt-5">My Courses</h3>
+      <div>
+        <div>
+          <div>
+            <% try { %>
+              <% educatorCourses.forEach(function(course) { %>
+
+                <div class="course-card">
+                  <div class="card-content">
+                    <h2><%= course.title %></h2>
+                    <p>Course ID: <%= course.id %></p>
+                    <a href="/course/<%= course.id %>" class="button blue">View Course</a>
+                  </div>
+                  <div class="image-container">
+                    <img src="https://www.svgrepo.com/show/288267/studying-student.svg" alt="Students" class="small-image" />
+                  </div>
+                </div>
+              <% }); %>
+            <% } catch (error) { %>
+              <p>Error: <%= error.message %></p>
+            <% } %>
+          </div>
+
     <a href="/home" style="position: absolute; font-weight: bold; color: #ffffff; top: 5px; left: 10px; ">Home</a>
+    <a href="/educatorCourses" style="position: absolute; font-weight: bold; color: #ffffff; top: 5px; left: 75px; "> Educator Courses</a>
+
   </body>
 </html>

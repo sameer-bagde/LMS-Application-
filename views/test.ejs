@@ -147,3 +147,270 @@
 </body>
 
 </html>
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Page</title>
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <style>
+body, html {
+    height: auto;
+}
+
+body {
+  background: #4CAF50;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: auto;
+      }
+
+        .container {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+            width: 95%;
+            margin-top: 50px;
+            margin-bottom: 10px;
+            height: 100hv;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #2196F3);
+            color: white;
+            padding: 10px;
+            border-radius: 10px 10px 10px 10px;
+            text-align: center;
+            display: flex;
+            align-items: top;
+            justify-content: space-between;
+        }
+
+        .header h2 {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .header-links {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-top{
+            align-items: top;
+            text-align: left;
+        }
+
+a.button.orange {
+    background: rgb(212, 142, 45);
+}
+
+a.button.orange {
+    background: #eb6d05;
+}
+
+        a.button {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-align: center;
+            display: inline-block;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+
+        a.button.yellow {
+            background: #bccb17;
+        }
+
+        a.button.yellow:hover {
+            background: #edce45;
+        }
+
+        a.button.red {
+            background: #ed4545;
+        }
+
+        a.button.red:hover {
+            background: #eb2c05;
+        }
+
+        a.button.blue {
+            background: hsl(207, 74%, 36%);
+        }
+
+        a.button.blue:hover {
+            background: #185c8a;
+        }
+
+        a.button.green {
+            background: #47db34;
+        }
+
+        a.button.green:hover {
+            background: #0f9a1b;
+        }
+
+        a.button.orange {
+            background: #dba334;
+        }
+
+        a.button.orange:hover {
+            background: #de9b27;
+        }
+
+        .course-card {
+            background: #F5F5F5;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+            margin: 10px 0;
+            cursor: pointer;
+            transition: box-shadow 0.3s;
+        }
+
+        .course-card:hover {
+            box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .course-card h2 {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .course-card p {
+            font-size: 14px;
+            color: #555;
+            margin: 10px 0;
+        }
+
+
+      a {
+        display: block;
+        color: #000000;
+        text-align: center;
+        padding: 10px 12px;
+        text-decoration: none;
+      }
+
+      a:hover:not(.active) {
+        background-color: rgb(6, 191, 62);
+        border-radius: 5px 5px 5px 5px;
+      }
+    </style>
+
+<script>
+  var token = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+
+
+        
+// enrollment no.
+
+document.addEventListener('DOMContentLoaded', () => {
+  const enrollmentReport = document.getElementById('enrollmentReport');
+const userIds = Array.from({ length: 10}, (_, index) => index + 1);
+  userIds.forEach((currentUserId) => {
+    fetch(`/educatorEnrollmentReport/${currentUserId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        data.forEach((courseEnrollment) => {
+          enrollmentReport.innerHTML += `Course ID: ${courseEnrollment.courseId}, Enrolled Students: ${courseEnrollment.enrollmentCount}</p>`;
+        });
+      })
+      .catch((error) => console.error('Error:', error));
+  });
+});
+
+
+  function courseEnrolled(course) {
+  console.log(course);
+
+  fetch(`/courseEnrolled/${course}`, {
+    method: "put",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      _csrf: token,
+    }),
+  })
+    .then((res) => {
+      window.location.reload();
+    })
+    .catch((err) => console.error(err));
+}
+
+    </script>
+  </head>
+  <body>
+    <div class="container mx-auto">
+      <div class="header">
+        <div class="header-links">
+          <h2 class="header">Wellcome <%= firstName %> <%= lastName %></h2>
+          <div>
+            <% if (role === 'educator') { %>
+            <a href="/createCourse/<%= course.id %>" class="button blue">Create Course</a>
+            <a href="/educatorCourses" class="button green">My Course</a>
+            <a href="/report" class="button orange">Report</a>
+            <% } %>
+          </div>
+        </div>
+        <div style="padding-top: 20px;">
+          <a href="/changePassword" class="button yellow">Change Password</a>
+          <a href="/signout" class="button red">Sign Out</a>
+          
+        </div>
+      </div>
+
+      <h3 class="text-2xl font-semibold">Course Report</h3>
+        <div class="card-content" id="enrollmentReport"></div >
+
+
+        <div>
+          <% if (role === 'student') { %>
+            <hr />
+            <h3 class="text-2xl font-semibold">Enrolled Courses</h3>
+          <%- include("enrolledCourse.ejs", { enrolledCourses: enrolledCourses }) %>
+    
+          <% } %>
+          <hr />
+        </div>
+
+      <h3 class="text-2xl font-semibold">Available Courses</h3>
+      <div>
+        <% if (role === 'educator') { %>
+          <% course.forEach(function(course) { %>
+            <div class="course-card">
+              <h2><%= course.title %></h2>
+              <p>Course ID: <%= course.id %></p>
+              <p>Educator: <%= course.educatorName %></p>
+              </div>
+          <% }); %>
+        <% } else { %>
+          <% course.forEach(function(course) { %>
+          <div class="course-card">
+            <h2><%= course.title %></h2>
+            <p>Course ID: <%= course.id %></p>
+            <p>Educator: <%= course.educatorName %></p>
+            <a href="/course/<%= course.id %>" class="button blue">
+              View Course
+            </a>
+            <a href="/enrolledCourse/<%= course.id %>" class="button green ml-2" onclick="courseEnrolled('<%= course.id %>')">Enroll</a>
+          </div>
+          <% }); %>
+        <% } %>
+      </div>
+    <a href="/home" style="position: absolute; font-weight: bold; color: #ffffff; top: 5px; left: 10px; ">Home</a>
+  </body>
+</html>
