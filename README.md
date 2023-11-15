@@ -40,7 +40,8 @@ Here's how to use the application:
 
 https://github.com/sameer-bagde/LMS-Application-
 
+## Application Link
+https://lms-application.onrender.com
 
-
-## Application Link          
+## GitHub Repository Link          
 https://github.com/sameer-bagde/LMS-Application-
