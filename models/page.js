@@ -14,12 +14,15 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static addPage({ title, content, userId}) {
+    static addPage({ title, content}) {
       return Page.create({
         title: title,
-        userId:userId,
         content: content.length(1024) ,
       });
+    
+    }
+    setPagemarkAsComplete(bool) {
+      return this.update({ completed: bool });
     }
   }
   Page.init(
@@ -27,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       title: DataTypes.STRING,
       content: DataTypes.TEXT,
       chapterId: DataTypes.INTEGER,
+      userId: DataTypes.INTEGER,
       isComplete: DataTypes.BOOLEAN,
     },
     {

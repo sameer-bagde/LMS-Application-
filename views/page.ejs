@@ -154,6 +154,29 @@
             }
     </style>
 
+<script>
+      var token = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+        function markPageAsComplete(page) {
+  console.log(page);
+
+  fetch(`/page/${page}/markAsComplete`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      _csrf: token,
+    }),
+  })
+    .then((res) => {
+      window.location.reload();
+    })
+    .catch((err) => console.error(err));
+}
+</script>
+
   </head>
   <body>
     <div class="container mx-auto">
@@ -167,10 +190,26 @@
         <h3 class="mb-8 mt-8 text-xl font-semibold">Content:</h3>
         <p><%= page.content %></p>
       </div>
+        <% if (role === 'student' && page && typeof page.isComplete !== 'undefined') { %>
+          <% if (page.isComplete === true) { %>     
+            <a href="/course/<%= course.id %>/chapter/<%= chapter.id %>/page/<%= page.id %>" class="button green ml-2">Complete</a>
+          <% } else { %>
+            <a href="/page/<%= page.id %>/markAsComplete" class="button green ml-2" onclick="markPageAsComplete('<%= page.id %>')">Mark Page as Complete</a>
+            <a href="/createCourse/<%= course.id %>" class="button blue">Next</a>
+          <% } %>
+        <% } %>
+        <% console.log(page.isComplete) %>
+      </div>
+
+
     </div>
     <a href="/home" style="position: absolute; font-weight: bold; color: #ffffff; top: 10px; left: 10px; ">Home </a>
     <a href="/course/<%= course.id %>" style="position: absolute; color: #ffffff; font-weight: bold; top: 10px; left: 75px;">Course Details</a>
     <a href="/course/<%= course.id %>/chapter/<%= chapter.id %>" style="position: absolute; color: #ffffff; font-weight: bold; top: 10px; left: 210px;">Chapter Details</a>
     <a href="/course/<%= course.id %>/chapter/<%= chapter.id %>/page/<%= page.id %>" style="position: absolute; color: #ffffff; font-weight: bold; top: 10px; left: 350px;">Page Details</a>
   </body>
+
+  <script>
+
+  </script>
 </html>

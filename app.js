@@ -300,10 +300,6 @@ app.get("/enrolledCourse/:course.id", connectEnsureLogin.ensureLoggedIn(), async
 app.get('/educatorEnrollmentReport/:educatorId', async (req, res) => {
   try {
     const educatorId = req.params.educatorId;
-
-    // Log the educatorId to check if it's correct
-    console.log('Educator ID:', educatorId);
-
     // Retrieve courses associated with the educator
     const courses = await Course.findAll({ where: { userId: educatorId } });
 
@@ -446,9 +442,11 @@ app.post(
       // Check if a chapter with the same title already exists in the course
       const existingChapter = await Chapter.findOne({ where: { title: title, courseId: courseId } });
       if (existingChapter) {
-        response.status(400).json({ message: "Chapter with the same title already exists in this course" });
+        request.flash('error', 'Chapter with the same title already exists in this course');
+        response.redirect(`/course/${courseId}/createChapter`);
         return;
       }
+
       const newChapter = await Chapter.create({
         title: title,
         description: description,
@@ -462,7 +460,6 @@ app.post(
     }
   }
 );
-
 
 // chapter get according to id
 app.get(
@@ -542,7 +539,7 @@ app.get('/course/:courseId/chapter/:chapterId/createPage', connectEnsureLogin.en
   const chapterId = request.params.chapterId;
   const courseId = request.params.courseId; // Corrected parameter name
   
-
+const { title, content} = request.body;
   try {
     const chapter = await Chapter.findOne({ where: { id: chapterId } }); // Corrected where clause
     const course = await Course.findOne({ where: { id: courseId } });
@@ -594,12 +591,12 @@ app.post(
       }
 
       // Check if a page with the same title already exists (if needed)
-      const existingPage = pages.find((page) => page.title === title);
-      if (existingPage) {
-        response.status(400).json({ message: "Page with the same title already exists" });
+      const existingpage = await Page.findOne({ where: { title: title, chapterId: chapterId } });
+      if (existingpage) {
+        request.flash('error', 'Page with the same title already exists in this chapter');
+        response.redirect(`/course/${courseId}/chapter/${chapterId}/createpage`);
         return;
       }
-      
       const newPage = await Page.create({
         title: title,
         content: content,
@@ -622,7 +619,7 @@ app.get(
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     const { title, content } = request.params; // Use params for route parameters
-
+    const user = request.user; 
     const courseId = request.params.courseId;
     const chapterId = request.params.chapterId;
     const pageId = request.params.pageId; // Added pageId
@@ -647,6 +644,7 @@ app.get(
         response.render("page", {
           title: title,
           role: role,
+          user:user,
           course: course,
           content: content,
           chapter: chapter,
@@ -694,14 +692,12 @@ app.put("/courseEnrolled/:courseId", connectEnsureLogin.ensureLoggedIn(), async 
   const currentUserId = request.user.id;
 
   try {
-
     // Record the enrollment in the Enrollments model
     const newEnrollment = await Enrollment.create({
       userId: currentUserId,
       courseId,
       enrollmentStatus: true, // Set enrollmentStatus to true
     });
-
     // Fetch the associated Course model
     const enrolledCourse = await Course.findByPk(courseId);
 
@@ -715,6 +711,45 @@ app.put("/courseEnrolled/:courseId", connectEnsureLogin.ensureLoggedIn(), async 
   }
 });
 
+
+app.put('/page/:pageId/markAsComplete', connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
+  const pageId = request.params.pageId;
+  const userId = request.user.id; // Get the ID of the logged-in user
+
+  try {
+    const page = await Page.findByPk(pageId);
+
+    if (!page) {
+      return response.status(404).json({ message: 'Page not found' });
+    }
+
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return response.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if the page is already marked as complete for this user
+    const userPageCompletion = await Page.findOne({
+      where: {
+        id: pageId,
+        userId: userId
+      }
+    });
+
+    if (userPageCompletion && userPageCompletion.isComplete) {
+      return response.status(200).json({ message: 'Page already marked as complete for this user' });
+    }
+
+    // Mark the page as complete for the user
+    await page.update({ userId: userId, isComplete: true });
+
+    return response.status(200).json({ message: 'Page marked as complete for the user' });
+  } catch (error) {
+    console.error(error);
+    return response.status(500).json({ message: 'Failed to mark page as complete for the user' });
+  }
+});
 
 app.get(
   "/changePassword",
