@@ -13,7 +13,6 @@ const session = require("express-session");
 const LocalStrategy = require("passport-local");
 const bcrypt = require("bcrypt");
 const flash = require("connect-flash");
-const { count } = require("console");
 const saltRounds = 10;
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
@@ -27,10 +26,12 @@ app.use(flash());
 app.use(
   session({
     secret: "my-super-secret-key-7218728182782818218782718",
+    resave: false, // Set resave option to false to avoid deprecation warning
+    saveUninitialized: false, // Set saveUninitialized option to false to avoid deprecation warning
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
     },
-  }),
+  })
 );
 app.use(passport.initialize());
 app.use(passport.session());
@@ -624,7 +625,6 @@ app.get(
     const chapterId = request.params.chapterId;
     const pageId = request.params.pageId; // Added pageId
     const role = request.user.role;
-
     try {
       const course = await Course.findByPk(courseId);
       const chapter = await Chapter.findByPk(chapterId);
@@ -728,7 +728,6 @@ app.put('/page/:pageId/markAsComplete', connectEnsureLogin.ensureLoggedIn(), asy
     if (!user) {
       return response.status(404).json({ message: 'User not found' });
     }
-
     // Check if the page is already marked as complete for this user
     const userPageCompletion = await Page.findOne({
       where: {
