@@ -712,11 +712,9 @@ app.put("/courseEnrolled/:courseId", connectEnsureLogin.ensureLoggedIn(), async 
     // Fetch the associated Course model for the enrolled course
     const enrolledCourse = await Course.findByPk(courseId);
 
-    // Respond with a success message and the enrolled course information
-    response.status(200).json({
-      message: "Enrolled successfully",
-      enrolledCourse: enrolledCourse.toJSON(), // Include course information in the response
-    });
+    // Respond with a success message and redirect to /home
+    request.flash('success', 'Enrolled successfully.');
+    response.redirect('/home');
   } catch (error) {
     console.error(error);
     response.status(500).json({ message: "Internal Server Error" });
@@ -725,7 +723,7 @@ app.put("/courseEnrolled/:courseId", connectEnsureLogin.ensureLoggedIn(), async 
 
 
 
-app.put('/page/:pageId/markAsComplete', connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
+app.post('/page/:pageId/markAsComplete', connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
   const pageId = request.params.pageId;
   const userId = request.user.id; // Get the ID of the logged-in user
 
