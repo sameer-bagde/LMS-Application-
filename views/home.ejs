@@ -27,8 +27,8 @@ body {
             box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
             width: 95%;
             margin-top: 50px;
-            margin-bottom: 10px;
-            height: 100hv;
+            margin-bottom: 5px;
+            height: auto;
         }
 
         .header {
@@ -155,6 +155,15 @@ a.button.orange {
         background-color: rgb(6, 191, 62);
         border-radius: 5px 5px 5px 5px;
       }
+
+      .error-messages-container {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #dacaca; /* Change this to your desired error message background color */
+      padding: 10px;
+      border-radius: 5px;}
     </style>
 
 <script>
@@ -229,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
       <% if (role === 'educator') { %>
-        <h3 class="text-2xl font-semibold">Course Report</h3>
+        <h3 class="text-2xl font-semibold">Course Report & Popularity</h3>
         <div class="card-content" id="enrollmentReport"></div >
       <% } %>
 
@@ -270,5 +279,14 @@ document.addEventListener('DOMContentLoaded', () => {
         <% } %>
       </div>
     <a href="/home" style="position: absolute; font-weight: bold; color: #ffffff; top: 5px; left: 10px; ">Home</a>
+    <div class="error-messages-container">
+      <% if (messages && messages.error && messages.error.length > 0) { %>
+      <% var i = 0; %>
+      <% while (i < messages.error.length) { %>
+      <p><%= messages.error[i] %></p>
+      <% i++; %>
+      <% } %>
+      <% } %>
+    </div>
   </body>
 </html>

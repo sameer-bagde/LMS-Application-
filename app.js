@@ -687,20 +687,32 @@ app.delete('/page/:pageId', connectEnsureLogin.ensureLoggedIn(), async (request,
 
 // delete page
 // course enrollement
+
 app.put("/courseEnrolled/:courseId", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
   const courseId = request.params.courseId;
   const currentUserId = request.user.id;
 
   try {
-    // Record the enrollment in the Enrollments model
+    // Check if the user is already enrolled in the course
+    const existingEnrollment = await Enrollment.findOne({ where: { userId: currentUserId, courseId } });
+    if (existingEnrollment && existingEnrollment.enrollmentStatus) {
+      // User is already enrolled
+      request.flash('error', 'You are already enrolled in this course.');
+      response.redirect(`/home`);
+      return;
+    }
+
+    // If not already enrolled, create a new enrollment record
     const newEnrollment = await Enrollment.create({
       userId: currentUserId,
       courseId,
       enrollmentStatus: true, // Set enrollmentStatus to true
     });
-    // Fetch the associated Course model
+
+    // Fetch the associated Course model for the enrolled course
     const enrolledCourse = await Course.findByPk(courseId);
 
+    // Respond with a success message and the enrolled course information
     response.status(200).json({
       message: "Enrolled successfully",
       enrolledCourse: enrolledCourse.toJSON(), // Include course information in the response
@@ -710,6 +722,7 @@ app.put("/courseEnrolled/:courseId", connectEnsureLogin.ensureLoggedIn(), async 
     response.status(500).json({ message: "Internal Server Error" });
   }
 });
+
 
 
 app.put('/page/:pageId/markAsComplete', connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
