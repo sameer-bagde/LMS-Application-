@@ -210,7 +210,7 @@ body {
                     View Page
                   </a>
                   <% if (role === 'educator') { %>
-                    <a href="#!" class="button red ml-2" onclick="deletePage('<%= pageItem.id %>')">Delete</a>
+                    <a href="/course/<%= course.id %>/chapter/<%= chapter.id %>" class="button red ml-2" onclick="deletePage('<%= pageItem.id %>')">Delete</a>
                   <% } %>
                   <% if (role === 'student') { %>
                     <span class="ml-2">
