@@ -195,7 +195,6 @@
             <a href="/course/<%= course.id %>/chapter/<%= chapter.id %>/page/<%= page.id %>" class="button green ml-2">Complete</a>
           <% } else { %>
             <a href="/page/<%= page.id %>/markAsComplete" class="button green ml-2" onclick="markPageAsComplete('<%= page.id %>')">Mark Page as Complete</a>
-            <a href="/createCourse/<%= course.id %>" class="button blue">Next</a>
           <% } %>
         <% } %>
         <% console.log(page.isComplete) %>
