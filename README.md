@@ -38,7 +38,9 @@ Here's how to use the application:
 
 ## Video Link
 
-https://github.com/sameer-bagde/LMS-Application-
+https://clipchamp.com/watch/dUyi24i56Nm
+https://clipchamp.com/watch/eIPLQaAe2mZ
+
 
 ## Application Link
 https://lms-application.onrender.com
