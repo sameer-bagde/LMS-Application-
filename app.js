@@ -23,16 +23,13 @@ app.use(cookieParser("shh! some secret string"));
 app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
 app.use(flash());
 
-app.use(
-  session({
-    secret: "my-super-secret-key-7218728182782818218782718",
-    resave: false, // Set resave option to false to avoid deprecation warning
-    saveUninitialized: false, // Set saveUninitialized option to false to avoid deprecation warning
-    cookie: {
-      maxAge: 24 * 60 * 60 * 1000,
-    },
-  })
-);
+
+app.use(session({
+  secret: "my-super-secret-key-721872818218782718",
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000,
+  },
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(function (request, response, next) {
@@ -700,6 +697,9 @@ app.put("/courseEnrolled/:courseId", connectEnsureLogin.ensureLoggedIn(), async 
       request.flash('error', 'You are already enrolled in this course.');
       response.redirect(`/home`);
       return;
+    } else {
+      request.flash('success', 'Enrolled successfully.');
+      response.redirect('/home');
     }
 
     // If not already enrolled, create a new enrollment record
@@ -713,8 +713,7 @@ app.put("/courseEnrolled/:courseId", connectEnsureLogin.ensureLoggedIn(), async 
     const enrolledCourse = await Course.findByPk(courseId);
 
     // Respond with a success message and redirect to /home
-    request.flash('success', 'Enrolled successfully.');
-    response.redirect('/home');
+
   } catch (error) {
     console.error(error);
     response.status(500).json({ message: "Internal Server Error" });
@@ -725,7 +724,7 @@ app.put("/courseEnrolled/:courseId", connectEnsureLogin.ensureLoggedIn(), async 
 
 app.post('/page/:pageId/markAsComplete', connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
   const pageId = request.params.pageId;
-  const userId = request.user.id; // Get the ID of the logged-in user
+  const currentUserId = request.user.id; // Get the ID of the logged-in user
 
   try {
     const page = await Page.findByPk(pageId);
@@ -734,26 +733,31 @@ app.post('/page/:pageId/markAsComplete', connectEnsureLogin.ensureLoggedIn(), as
       return response.status(404).json({ message: 'Page not found' });
     }
 
-    const user = await User.findByPk(userId);
+    const user = await User.findByPk(currentUserId);
 
     if (!user) {
       return response.status(404).json({ message: 'User not found' });
     }
-    // Check if the page is already marked as complete for this user
+
     const userPageCompletion = await Page.findOne({
       where: {
         id: pageId,
-        userId: userId
+        userId: currentUserId
       }
     });
+    console.log(userPageCompletion);
 
     if (userPageCompletion && userPageCompletion.isComplete) {
       return response.status(200).json({ message: 'Page already marked as complete for this user' });
     }
 
-    // Mark the page as complete for the user
-    await page.update({ userId: userId, isComplete: true });
-
+        // Mark the page as complete for the user
+    const markAsComplete = await page.update({
+      userId: currentUserId,
+      id: pageId,
+      isComplete: true, 
+    });
+console.log(markAsComplete);
     return response.status(200).json({ message: 'Page marked as complete for the user' });
   } catch (error) {
     console.error(error);

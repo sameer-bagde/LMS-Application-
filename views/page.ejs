@@ -209,7 +209,7 @@
         <p><%= page.content %></p>
       </div>
       <% if (role === 'student' && page && typeof page.isComplete !== 'undefined') { %>
-        <% if (page.isComplete === true) { %>
+        <% if (page.isComplete === true  && page.userId === user.id ) { %>
           <a href="/course/<%= course.id %>/chapter/<%= chapter.id %>/page/<%= page.id %>" class="mark-complete-button ml-2">Complete</a>
         <% } else { %>
           <form action="/page/<%= page.id %>/markAsComplete" method="POST" style="display: inline;">
@@ -220,6 +220,7 @@
       <% } %>
       <% console.log(page.isComplete) %>
       <% console.log(user.id) %>
+      <% console.log(page.id) %>
       </div>
 
 
