@@ -141,3 +141,54 @@ test("Educator view own courses and edit them", async () => {
   });
 
 
+  test("Mark Pages as Complete", async () => {
+    agent = request.agent(server);
+    const res = await agent.get("/course/:courseId/chapter/:chapterId/page/:pageId");
+    const csrfToken = extractCsrfToken(res);
+    const response = await agent.post("/page/:pageId/markAsComplete").send({
+      _csrf: csrfToken,
+      userId: 5,
+      id: 2,
+      isComplete: true, 
+      });
+    expect(res.statusCode).toBe(302);
+  });
+  
+
+  test("Should Enroll In Course", async () => {
+    agent = request.agent(server);
+    const res = await agent.get("/home");
+    const csrfToken = extractCsrfToken(res);
+    const response = await agent.put("/courseEnrolled/:courseId").send({
+      _csrf: csrfToken,
+      userId: 5,
+      courseId : 3,
+      enrollmentStatus: true, 
+      });
+    expect(res.statusCode).toBe(302);
+  });
+
+
+  test("Delete Chapter", async () => {
+    agent = request.agent(server);
+    const res = await agent.get("/course/:id");
+    const csrfToken = extractCsrfToken(res);
+    const response = await agent.put("/chapter/:chapterId").send({
+      _csrf: csrfToken,
+      chapterId: 3,
+      });
+    expect(res.statusCode).toBe(302);
+  });
+
+
+
+  test("/course/:courseId/chapter/:chapterId/page/:pageId", async () => {
+    agent = request.agent(server);
+    const res = await agent.get("/course/:id");
+    const csrfToken = extractCsrfToken(res);
+    const response = await agent.put("/page/:pageId").send({
+      _csrf: csrfToken,
+      chapterId: 3,
+      });
+    expect(res.statusCode).toBe(302);
+  });
