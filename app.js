@@ -197,10 +197,10 @@ app.get("/home", connectEnsureLogin.ensureLoggedIn(), async (request, response) 
     const loggedInUserId = request.user.id; // Logged-in user's ID
     const firstName = request.user.firstName;
     const lastName = request.user.lastName;
-
     const users = await User.findAll(); 
     const userIds = users.map((user) => user.id);
-
+    const progressStatus = await Page.findAll();
+    console.log(progressStatus);
     const course = await Course.findAll();
     const chapter = await Chapter.findAll();
     const role = request.user.role;
@@ -218,6 +218,7 @@ app.get("/home", connectEnsureLogin.ensureLoggedIn(), async (request, response) 
         user: loggedInUserId,
         educatorCourses,
         enrolledCourses,
+        progressStatus,
         userIds, // Include user IDs in the data object
         csrfToken: request.csrfToken(),
       });
