@@ -266,18 +266,25 @@ document.addEventListener('DOMContentLoaded', () => {
           <% }); %>
         <% } else { %>
           <% course.forEach(function(course) { %>
-          <div class="course-card">
-            <h2><%= course.title %></h2>
-            <p>Course ID: <%= course.id %></p>
-            <p>Educator: <%= course.educatorName %></p>
-            <a href="/course/<%= course.id %>" class="button blue">
-              View Course
-            </a>
-            <a href="/home" class="button green ml-2" onclick="courseEnrolled('<%= course.id %>')">Enroll</a>
-          </div>
+            <div class="course-card">
+              <h2><%= course.title %></h2>
+              <p>Course ID: <%= course.id %></p>
+              <p>Educator: <%= course.educatorName %></p>
+              <% const isEnrolled = enrolledCourses && enrolledCourses.some(enrollment => enrollment.courseId === course.id && enrollment.enrollmentStatus === true); %>
+              <% if (!isEnrolled) { %>
+                <!-- Display "Enroll" button only if the user is not enrolled -->
+                <a href="/course/<%= course.id %>" class="button blue">View Course</a>
+                <a href="/home" class="button green ml-2" onclick="courseEnrolled('<%= course.id %>')">Enroll</a>
+              <% } else { %>
+                <!-- User is already enrolled, don't display the "Enroll" button -->
+                <span>Already Enrolled</span>
+                <a href="/course/<%= course.id %>" class="button blue">View Course</a>
+              <% } %>
+            </div>
           <% }); %>
         <% } %>
       </div>
+      
     <a href="/home" style="position: absolute; font-weight: bold; color: #ffffff; top: 5px; left: 10px; ">Home</a>
     <div class="error-messages-container">
       <% if (messages && messages.error && messages.error.length > 0) { %>
