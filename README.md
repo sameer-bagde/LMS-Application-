@@ -37,9 +37,12 @@ Here's how to use the application:
 
 
 ## Video Link
-
+LMS
 https://clipchamp.com/watch/dUyi24i56Nm
+MarkAsCpmplete
 https://clipchamp.com/watch/eIPLQaAe2mZ
+Change Password
+https://clipchamp.com/watch/QCbNyyqE8hB
 
 
 ## Application Link
