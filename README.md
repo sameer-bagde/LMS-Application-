@@ -37,11 +37,11 @@ Here's how to use the application:
 
 
 ## Video Link
-LMS
+**LMS**
 https://clipchamp.com/watch/dUyi24i56Nm
-MarkAsCpmplete
+**MarkAsCpmplete**
 https://clipchamp.com/watch/eIPLQaAe2mZ
-Change Password
+**Change Password**
 https://clipchamp.com/watch/QCbNyyqE8hB
 
 
