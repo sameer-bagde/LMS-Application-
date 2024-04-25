@@ -17,11 +17,12 @@
           <span>Total Pages in Course ID <%= course.id %>: <%= totalPagesForCourse %></span>
           
           <% let completedPagesCount = 0; %>
-          <% pagesForCourse.forEach(function(page) { %>
-            <% if (page.dataValues.isComplete === true) { %>
+          <% markAsComplete.forEach(function(entry) { %>
+            <% if (entry.userId === user && entry.isComplete === true) { %>
               <% completedPagesCount++; %>
             <% } %>
           <% }); %>
+          
           <br>
           <span>Completed Pages in Chapter: <%= completedPagesCount %></span>
           <br>
@@ -30,7 +31,6 @@
             <span>Completion Percentage in Chapter: <%= completionPercentage.toFixed(2) %>%</span>
           <% } %>
         <% } %>
-        
       </div>
     <% } %>
   <% }); %>

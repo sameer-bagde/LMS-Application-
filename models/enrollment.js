@@ -12,9 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
     Enrollment.belongsTo(models.Course, { foreignKey: 'courseId' });
     }
-    setenrollmentStatus(bool) {
-      return this.update({ completed: bool });
-    }
+
     static enrolledcourse(courseId) {
       return this.findAll({
         where: {

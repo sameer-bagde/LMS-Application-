@@ -31,7 +31,6 @@ module.exports = (sequelize, DataTypes) => {
       content: DataTypes.TEXT,
       chapterId: DataTypes.INTEGER,
       userId: DataTypes.INTEGER,
-      isComplete: DataTypes.BOOLEAN,
     },
     {
       sequelize,

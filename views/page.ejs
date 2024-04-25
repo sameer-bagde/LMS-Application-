@@ -208,9 +208,13 @@
         <h3 class="mb-8 mt-8 text-xl font-semibold">Content:</h3>
         <p><%= page.content %></p>
       </div>
-      <% if (role === 'student' && page && typeof page.isComplete !== 'undefined') { %>
-        <% if (page.isComplete === true  && page.userId === user.id ) { %>
-          <a href="/course/<%= course.id %>/chapter/<%= chapter.id %>/page/<%= page.id %>" class="mark-complete-button ml-2">Complete</a>
+      <% if (role === 'student' && page) { %>
+        <% if (markAsComplete && markAsComplete.isComplete) { %>
+          <% if (markAsComplete.userId === user.id) { %>
+            <a href="/course/<%= course.id %>/chapter/<%= chapter.id %>/page/<%= page.id %>" class="mark-complete-button ml-2">Complete</a>
+          <% } else { %>
+            <p>This page has been marked as complete by another user.</p>
+          <% } %>
         <% } else { %>
           <form action="/page/<%= page.id %>/markAsComplete" method="POST" style="display: inline;">
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
@@ -218,6 +222,7 @@
           </form>
         <% } %>
       <% } %>
+      
       <% console.log(page.isComplete) %>
       <% console.log(user.id) %>
       <% console.log(page.id) %>

@@ -2,7 +2,7 @@
 /* eslint-disable no-undef */
 const express = require("express");
 const app = express();
-const { Course, User, Chapter, Page, Enrollment} = require("./models");
+const { Course, User, Chapter, Page, Enrollment, MarkAsComplete } = require("./models");
 var csrf = require("tiny-csrf");
 const bodyParser = require("body-parser");
 var cookieParser = require("cookie-parser");
@@ -200,13 +200,12 @@ app.get("/home", connectEnsureLogin.ensureLoggedIn(), async (request, response) 
     const users = await User.findAll(); 
     const userIds = users.map((user) => user.id);
     const progressStatus = await Page.findAll();
-    console.log(progressStatus);
     const course = await Course.findAll();
     const chapter = await Chapter.findAll();
     const role = request.user.role;
     const enrolledCourses = await Enrollment.findAll({ where: { userId: loggedInUserId } });
     const educatorCourses = await Course.findAll({ where: { userId: loggedInUserId } });
-
+    const markAsComplete = await MarkAsComplete.findAll();
     if (request.accepts("html")) {
       response.render("home", {
         // Pass necessary data to the frontend
@@ -219,6 +218,7 @@ app.get("/home", connectEnsureLogin.ensureLoggedIn(), async (request, response) 
         educatorCourses,
         enrolledCourses,
         progressStatus,
+        markAsComplete,
         userIds, // Include user IDs in the data object
         csrfToken: request.csrfToken(),
       });
@@ -571,6 +571,8 @@ app.post(
     const { title, content } = request.body;
     const courseId = request.params.courseId;
     const chapterId = request.params.chapterId;
+    const currentUserId = request.user.id;
+
 
     try {
       // Fetch the course and chapter based on the provided IDs
@@ -600,7 +602,7 @@ app.post(
         title: title,
         content: content,
         chapterId: chapterId,
-        isComplete: false, 
+        userId: currentUserId,        
         courseId: courseId,
       });
 
@@ -630,6 +632,15 @@ app.get(
       // Use findOne to get a specific page based on pageId
       const page = await Page.findOne({ where: { id: pageId } });
 
+
+      const markAsComplete = await MarkAsComplete.findOne({
+        where: {
+          pageId: pageId,
+          userId: user.id
+        }
+      });
+
+
       if (!course) {
         response.status(404).json({ message: "Course not found" });
         return;
@@ -647,6 +658,7 @@ app.get(
           content: content,
           chapter: chapter,
           page: page, // Pass the specific page
+          markAsComplete: markAsComplete, // Pass markAsComplete data
           csrfToken: request.csrfToken(),
         });
       }
@@ -728,43 +740,53 @@ app.post('/page/:pageId/markAsComplete', connectEnsureLogin.ensureLoggedIn(), as
   const currentUserId = request.user.id; // Get the ID of the logged-in user
 
   try {
+    // Check if the page exists
     const page = await Page.findByPk(pageId);
 
     if (!page) {
-      return response.status(404).json({ message: 'Page not found' });
+      request.flash('error', 'Page not found');
+      return response.redirect('/'); // Redirect to a suitable page
     }
 
+    // Check if the user exists
     const user = await User.findByPk(currentUserId);
 
     if (!user) {
-      return response.status(404).json({ message: 'User not found' });
+      request.flash('error', 'User not found');
+      return response.redirect('/'); // Redirect to a suitable page
     }
 
-    const userPageCompletion = await Page.findOne({
+    // Check if the page is already marked as complete for this user
+    const userPageCompletion = await MarkAsComplete.findOne({
       where: {
-        id: pageId,
+        pageId: pageId,
         userId: currentUserId
       }
     });
-    console.log(userPageCompletion);
 
     if (userPageCompletion && userPageCompletion.isComplete) {
-      return response.status(200).json({ message: 'Page already marked as complete for this user' });
+      // Page is already marked as complete for this user
+      request.flash('success', 'Page already marked as complete for this user');
+      return response.redirect('/'); // Redirect to a suitable page
     }
 
-        // Mark the page as complete for the user
-    const markAsComplete = await page.update({
+    // Create a new entry in the MarkAsCompletes table
+    const markAsComplete = await MarkAsComplete.create({
+      pageId: pageId,
       userId: currentUserId,
-      id: pageId,
-      isComplete: true, 
+      isComplete: true,
     });
-console.log(markAsComplete);
-    return response.status(200).json({ message: 'Page marked as complete for the user' });
+
+    request.flash('success', 'Page marked as complete for the user');
+    return response.redirect('/'); // Redirect to a suitable page
   } catch (error) {
     console.error(error);
-    return response.status(500).json({ message: 'Failed to mark page as complete for the user' });
+    request.flash('error', 'Failed to mark page as complete for the user');
+    return response.redirect('/'); // Redirect to a suitable page
   }
 });
+
+
 
 app.get(
   "/changePassword",

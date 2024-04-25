@@ -22,10 +22,6 @@ module.exports = {
       chapterId: {
         type: Sequelize.INTEGER,
       },
-      isComplete: {
-        type: Sequelize.BOOLEAN,
-        default: false,
-      },
       userId: {
         type: Sequelize.INTEGER,
       },
