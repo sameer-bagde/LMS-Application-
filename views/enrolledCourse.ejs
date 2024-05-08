@@ -15,16 +15,19 @@
           <br>
           <% const totalPagesForCourse = pagesForCourse.length; %>
           <span>Total Pages in Course ID <%= course.id %>: <%= totalPagesForCourse %></span>
-          
+
           <% let completedPagesCount = 0; %>
-          <% markAsComplete.forEach(function(entry) { %>
-            <% if (entry.userId === user && entry.isComplete === true) { %>
-              <% completedPagesCount++; %>
-            <% } %>
+          <% pagesForCourse.forEach(function(page) { %>
+            <% markAsComplete.forEach(function(entry) { %>
+              <% console.log('pagesForCourse', entry.pageId === page.id ); %>
+
+              <% if (entry.pageId === page.id && entry.userId === user.id && entry.isComplete === true) { %>
+                <% completedPagesCount++; %>
+              <% } %>
+            <% }); %>
           <% }); %>
-          
           <br>
-          <span>Completed Pages in Chapter: <%= completedPagesCount %></span>
+          <span>Completed Pages in Course: <%= completedPagesCount %></span>
           <br>
           <% if (totalPagesForCourse > 0) { %>
             <% const completionPercentage = (completedPagesCount / totalPagesForCourse) * 100; %>

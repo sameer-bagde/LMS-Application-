@@ -206,6 +206,7 @@ app.get("/home", connectEnsureLogin.ensureLoggedIn(), async (request, response) 
     const enrolledCourses = await Enrollment.findAll({ where: { userId: loggedInUserId } });
     const educatorCourses = await Course.findAll({ where: { userId: loggedInUserId } });
     const markAsComplete = await MarkAsComplete.findAll();
+    const page = await Page.findAll();
     if (request.accepts("html")) {
       response.render("home", {
         // Pass necessary data to the frontend
@@ -219,6 +220,7 @@ app.get("/home", connectEnsureLogin.ensureLoggedIn(), async (request, response) 
         enrolledCourses,
         progressStatus,
         markAsComplete,
+        page,
         userIds, // Include user IDs in the data object
         csrfToken: request.csrfToken(),
       });
